@@ -5,11 +5,11 @@ import 'package:stacked/stacked.dart';
 class ThemeService extends ChangeNotifier with ListenableServiceMixin {
   ThemeService() {
     // Initialize with system theme mode
-    final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    final brightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
     _isDarkMode.value = brightness == Brightness.dark;
     listenToReactiveValues([_isDarkMode]);
   }
-
 
   final ReactiveValue<bool> _isDarkMode = ReactiveValue<bool>(false);
 
@@ -20,8 +20,7 @@ class ThemeService extends ChangeNotifier with ListenableServiceMixin {
     notifyListeners();
   }
 
-  ThemeData get themeData =>
-      _isDarkMode.value 
-    ? const SportyElegantMinimalTheme(TextTheme()).dark()
-    : const SportyElegantMinimalTheme(TextTheme()).light();
+  ThemeData get themeData => _isDarkMode.value
+      ? SportyElegantMinimalTheme(const TextTheme()).dark()
+      : SportyElegantMinimalTheme(const TextTheme()).light();
 }

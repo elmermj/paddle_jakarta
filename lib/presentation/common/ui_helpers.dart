@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-const double _tinySize = 5.0;
-const double _smallSize = 10.0;
-const double _mediumSize = 25.0;
-const double _largeSize = 50.0;
+const double _tinySize = 4.0;
+const double _smallSize = 8.0;
+const double _mediumSize = 24.0;
+const double _largeSize = 48.0;
 const double _massiveSize = 120.0;
 
 const Widget horizontalSpaceTiny = SizedBox(width: _tinySize);
@@ -22,7 +22,7 @@ const Widget verticalSpaceMassive = SizedBox(height: _massiveSize);
 Widget spacedDivider = const Column(
   children: <Widget>[
     verticalSpaceMedium,
-    Divider(color: Colors.blueGrey, height: 5.0),
+    Divider(color: Colors.blueGrey, height: 4.0),
     verticalSpaceMedium,
   ],
 );

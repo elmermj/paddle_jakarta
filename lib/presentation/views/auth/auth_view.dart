@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:paddle_jakarta/presentation/common/ui_helpers.dart';
 import 'package:paddle_jakarta/presentation/widgets/auth_form.dart';
+import 'package:paddle_jakarta/utils/themes/sporty_elegant_minimal_theme.dart';
 import 'package:stacked/stacked.dart';
 
 import 'auth_viewmodel.dart';
@@ -13,75 +15,140 @@ class AuthView extends StackedView<AuthViewModel> {
     AuthViewModel viewModel,
     Widget? child,
   ) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      body: _buildBody(viewModel: viewModel),
-      bottomNavigationBar: _buildNavBar(viewModel, context)
+    return Container(
+      decoration: BoxDecoration(
+        gradient: SportyElegantMinimalTheme.appBackgroundGradient(Theme.of(context).colorScheme.surface,),
+      ),
+      child: Scaffold(
+        body: _buildBody(viewModel: viewModel, context: context),
+        bottomNavigationBar: _buildNavBar(viewModel, context)
+      ),
     );
   }
 
-  Container _buildBody({
-    required AuthViewModel viewModel,
-  }) {
+  Container _buildBody({required AuthViewModel viewModel, required BuildContext context}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Stack(
         children: [
           Align(
-            alignment: Alignment.topCenter,
-            child: Text(
-              ThemeData.light().primaryColor.toString(),
-            ),
-          ),
-          Align(
             alignment: const AlignmentDirectional(0, -0.5),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(100),
-              onTap: () => viewModel.toggleTheme(),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                transitionBuilder: (Widget child, Animation<double> animation) {
-                  return ScaleTransition(scale: animation, child: child);
-                },
-                child: Icon(
-                  viewModel.themeService.isDarkMode
-                ? Icons.dark_mode
-                : Icons.light_mode,
-                  key: ValueKey<bool>(viewModel.themeService.isDarkMode),
-                  size: 64,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Paddle Jakarta', style: Theme.of(context).textTheme.headlineLarge),
+                verticalSpaceMedium,
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(100),
+                    onTap: () => viewModel.toggleTheme(),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 150),
+                      transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
+                      child: Icon(
+                        viewModel.themeService.isDarkMode
+                      ? Icons.dark_mode
+                      : Icons.light_mode,
+                        key: ValueKey<bool>(viewModel.themeService.isDarkMode),
+                        size: 32,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 150),
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                final slideTween = Tween<Offset>(
-                  begin: viewModel.indexState == 0 ? const Offset(1, 0) : const Offset(-1, 0),
-                  end: Offset.zero,
-                );
-                return FadeTransition(
-                  opacity: CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeInOut,
-                  ),
-                  child: SlideTransition(
-                    position: slideTween.animate(
-                      CurvedAnimation(
-                        parent: animation,
-                        curve: Curves.easeInOut,
-                      )
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width < 480 ? MediaQuery.of(context).size.width : 480,
+                maxHeight: MediaQuery.of(context).size.height * 0.5,
+              ),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 150),
+                reverseDuration: const Duration(milliseconds: 50),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  final slideTween = Tween<Offset>(
+                    begin: viewModel.indexState == 0
+                  ? const Offset(1, 0)
+                  : const Offset(-1, 0),
+                    end: Offset.zero,
+                  );
+                  return FadeTransition(
+                    opacity: CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeInOut,
                     ),
-                    child: child,
+                    child: SlideTransition(
+                      position: slideTween.animate(
+                        CurvedAnimation(
+                          parent: animation,
+                          curve: Curves.easeInOut,
+                        )
+                      ),
+                      child: child,
+                    ),
+                  );
+                },
+                child: AuthForm(
+                  suffixIcons: [
+                    IconButton(
+                      icon: Icon(
+                        viewModel.isVisible
+                      ? Icons.visibility
+                      : Icons.visibility_off
+                      ),
+                      onPressed: () => viewModel.toggleVisibility(),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        viewModel.isConfirmVisible
+                      ? Icons.visibility
+                      : Icons.visibility_off
+                      ),
+                      onPressed: () => viewModel.toggleConfirmVisibility(),
+                    ),
+                  ],
+                  isPasswords: [
+                    viewModel.isVisible,
+                    viewModel.isConfirmVisible
+                  ],
+                  viewModel: viewModel,
+                  index: viewModel.indexState,
+                  key: ValueKey<int>(viewModel.indexState),
+                  emailLoginWidget: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
+                    child: viewModel.isEmailCommitLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: () => viewModel.onLogin(),
+                      child: const Text('Login'),
+                    ),
                   ),
-                );
-              },
-              child: AuthForm(
-                viewModel: viewModel,
-                index: viewModel.indexState,
-                key: ValueKey<int>(viewModel.indexState),
+                  emailRegisterWidget: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
+                    child: viewModel.isEmailCommitLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: () => viewModel.onRegister(),
+                      child: const Text('Register'),
+                    ),
+                  ),
+                  googleLoginWidget: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
+                    child: viewModel.isGoogleLoginLoading
+                  ? const LinearProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: () => viewModel.onGoogleLogin(),
+                      child: const Text('Login with Google'),
+                    )
+                  ),
+                ),
               ),
             ),
           ),
@@ -119,14 +186,22 @@ class AuthView extends StackedView<AuthViewModel> {
     required String title,
     required AuthViewModel viewModel,
     required BuildContext context
-  }) => Expanded(
+  }) =>
+  Expanded(
     child: Center(
       child: TextButton(
         onPressed: () => viewModel.switchAuthState(index: index),
+        style: TextButton.styleFrom(
+          backgroundColor: index == viewModel.indexState
+        ? Theme.of(context).colorScheme.surface.withOpacity(0.75)
+        : Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100),
+          )
+        ),
         child: Text(
           title,
           style: TextStyle(
-            fontWeight: index == viewModel.indexState ? FontWeight.bold : FontWeight.normal,
             color: index == viewModel.indexState
           ? Theme.of(context).colorScheme.primary
           : Theme.of(context).colorScheme.onSurface,
@@ -141,4 +216,3 @@ class AuthView extends StackedView<AuthViewModel> {
     BuildContext context,
   ) => AuthViewModel();
 }
-

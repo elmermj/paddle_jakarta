@@ -19,21 +19,130 @@ class AuthViewModel extends BaseViewModel {
 
   int indexState = 0;
 
-  void switchAuthState({required int index}) {
-    indexState = index;
-    notifyListeners();
+  int countdown = 5;
+
+  bool isEmailCommitLoading = false;
+  bool isGoogleLoginLoading = false;
+  bool isVisible = false;
+  bool isConfirmVisible = false;
+  bool isBouncing = false;
+
+  bool isForgotEmailSent = false;
+  bool isLoading = false;
+
+  initializeVariables(){
+    emailController = TextEditingController();
+    emailConfirmController = TextEditingController();
+    phoneNumberController = TextEditingController();
+    passwordController = TextEditingController();
+    passwordConfirmController = TextEditingController();
+    nameController = TextEditingController();
+    indexState = 0;
+    isEmailCommitLoading = false;
+    isGoogleLoginLoading = false;
+    isVisible = false;
+    isConfirmVisible = false;
+    isBouncing = false;
+    isForgotEmailSent = false;
+    isLoading = false;
   }
 
   Future<void> onLogin() async {
-    _navigationService.replaceWithHomeView();
+    isEmailCommitLoading = true;
+    notifyListeners();
+    await Future.delayed(const Duration(seconds: 3));
+    isEmailCommitLoading = false;
+    notifyListeners();
   }
 
-  Future<void> onRegister() async {
-    _navigationService.replaceWithHomeView();
+  Future<void> onRegister() async {}
+
+  Future<void> onGoogleLogin() async {
+    isGoogleLoginLoading = true;
+    notifyListeners();
+    await Future.delayed(const Duration(seconds: 3));
+    isGoogleLoginLoading = false;
+    notifyListeners();
+  }
+
+  onForgotPassword() async {
+    isLoading = true;
+    notifyListeners();
+    await Future.delayed(const Duration(seconds: 3)).then((value) {
+      isLoading = false;
+      isForgotEmailSent = true;
+      notifyListeners();
+    });
+    startCountdown();
   }
 
   void toggleTheme() {
     themeService.toggleTheme();
     notifyListeners();
+  }
+
+  toggleVisibility() {
+    isVisible = !isVisible;
+    notifyListeners();
+  }
+
+  toggleConfirmVisibility() {
+    isConfirmVisible = !isConfirmVisible;
+    notifyListeners();
+  }
+
+  resetControllers() {
+    emailController.clear();
+    emailConfirmController.clear();
+    phoneNumberController.clear();
+    passwordController.clear();
+    passwordConfirmController.clear();
+    nameController.clear();
+    isEmailCommitLoading = false;
+    isGoogleLoginLoading = false;
+    isVisible = false;
+    isConfirmVisible = false;
+    isBouncing = false;
+  }
+
+  forgotIconBounce() async {
+    isBouncing = !isBouncing;
+    notifyListeners();
+  }
+
+  void switchAuthState({required int index}) {
+    indexState = index;
+    resetControllers();
+    notifyListeners();
+  }
+
+  startCountdown() async {
+    await Future.delayed(const Duration(seconds: 1), () {
+      countdown--;
+      notifyListeners();
+      if(countdown > 0){
+        startCountdown();
+      } else {        
+        _navigationService.replaceWithAuthView();
+      }
+    });
+  }
+
+  @override
+  void addListener(VoidCallback listener) {
+    super.addListener(listener);
+    emailController.addListener(listener);
+    passwordController.addListener(listener);
+    emailConfirmController.addListener(listener);
+    passwordConfirmController.addListener(listener);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    emailConfirmController.dispose();
+    passwordConfirmController.dispose();
   }
 }

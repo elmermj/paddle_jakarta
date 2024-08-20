@@ -1,62 +1,96 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SportyElegantMinimalTheme {
   final TextTheme textTheme;
 
-  const SportyElegantMinimalTheme(this.textTheme);
+  SportyElegantMinimalTheme(this.textTheme);
 
-  // Define a moonlight blue color
-  static const Color moonlightBlue = Color(0xFF4A90E2); // A calming blue
+  static double offsetVariable = 10;
 
-  static MaterialColor primarySwatch = const MaterialColor(
-    0xFF4A90E2, // Moonlight Blue
-    {
-      50: Color(0xFFE1E8F0),
-      100: Color(0xFFB0C4DE),
-      200: Color(0xFF8AB0D4),
-      300: Color(0xFF4A90E2),
-      400: Color(0xFF357ABD),
-      500: Color(0xFF4A90E2),
-      600: Color(0xFF4388D4),
-      700: Color(0xFF3173A9),
-      800: Color(0xFF1F5A8D),
-      900: Color(0xFF154F77),
-    },
-  );
+  static const Color moonlightBlue = Color.fromARGB(255, 117, 169, 229);
+  static const Color moonlightBlueUnderDark = Color.fromARGB(255, 99, 168, 246);
+  static const Color primaryContainerLight = Color.fromARGB(255, 212, 225, 241);
+  static const Color secondaryLight = Color.fromARGB(255, 218, 165, 32);
+  static const Color secondaryContainerLight =
+      Color.fromARGB(255, 245, 215, 154);
+  static const Color onSecondaryContainerLight =
+      Color.fromARGB(255, 63, 48, 29);
+  static const Color surfaceContainerHighestLight =
+      Color.fromARGB(255, 224, 224, 224);
+  static const Color onSurfaceVariantLight = Color.fromARGB(255, 117, 117, 117);
+  static const Color outlineLight = Color.fromARGB(255, 189, 189, 189);
+
+  static const Color primaryContainerDark = moonlightBlue;
+  static const Color secondaryDark = secondaryContainerLight;
+  static const Color secondaryContainerDark = onSecondaryContainerLight;
+  static const Color surfaceContainerHighestDark =
+      Color.fromARGB(255, 64, 64, 64);
+  static const Color onSurfaceVariantDark = Color.fromARGB(255, 204, 204, 204);
+  static const Color outlineDark = onSurfaceVariantLight;
+
+  static Color darkButtonBackground = darkScheme().surface.withOpacity(0.75);
+  static Color lightButtonBackground = lightScheme().surface.withOpacity(0.75);
+
+  static LinearGradient appBackgroundGradient(Color backgroundColor) {
+    return LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          backgroundColor,
+          const Color.fromARGB(255, 70, 113, 162).withOpacity(0.85),
+        ],
+        stops: const [
+          0.4,
+          1,
+        ]);
+  }
 
   static ColorScheme lightScheme() {
     return ColorScheme(
       brightness: Brightness.light,
       primary: moonlightBlue,
-      onPrimary: Colors.white,
-      primaryContainer: Color(0xFFD4E1F1), // Lightened version
+      onPrimary: Colors.black,
+      primaryContainer: primaryContainerLight,
       onPrimaryContainer: moonlightBlue,
-      secondary: const Color(0xFFDAA520), // Golden accents for elegance
-      onSecondary: Colors.white,
-      secondaryContainer: const Color(0xFFF5D79A),
-      onSecondaryContainer: const Color(0xFF3F301D),
+      secondary: secondaryLight,
+      onSecondary: Colors.black,
+      secondaryContainer: secondaryContainerLight,
+      onSecondaryContainer: onSecondaryContainerLight,
       surface: Colors.white,
-      onSurface: moonlightBlue,
-      error: const Color(0xFFB00020),
+      onSurface: const Color.fromARGB(255, 48, 48, 48),
+      error: const Color.fromARGB(255, 176, 0, 32),
       onError: Colors.white,
-      surfaceContainerHighest: const Color(0xFFE0E0E0),
-      onSurfaceVariant: const Color(0xFF757575),
-      outline: const Color(0xFFBDBDBD),
+      surfaceContainerHighest: surfaceContainerHighestLight,
+      onSurfaceVariant: onSurfaceVariantLight,
+      outline: outlineLight,
       shadow: Colors.black.withOpacity(0.2),
       scrim: Colors.black.withOpacity(0.2),
       inverseSurface: moonlightBlue,
-      inversePrimary: Color(0xFF357ABD),
+      inversePrimary: const Color.fromARGB(255, 53, 122, 189),
     );
   }
 
   ThemeData light() {
     final base = ThemeData.light();
+    final buttonHeight =
+        base.elevatedButtonTheme.style?.minimumSize?.resolve({})?.height ??
+            48.0;
     return base.copyWith(
       colorScheme: lightScheme(),
-      primaryColor: primarySwatch,
-      scaffoldBackgroundColor: lightScheme().surface,
+      primaryColor: moonlightBlue,
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.fuchsia: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.windows: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+        },
+      ),
+      scaffoldBackgroundColor: Colors.transparent,
       appBarTheme: AppBarTheme(
-        backgroundColor: lightScheme().primary,
+        backgroundColor: lightScheme().primary.withOpacity(0),
         foregroundColor: lightScheme().onPrimary,
         elevation: 0,
       ),
@@ -67,22 +101,38 @@ class SportyElegantMinimalTheme {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
-      textTheme: textTheme.apply(
+      textTheme: base.textTheme.apply(
+        fontFamily: GoogleFonts.poppins().fontFamily,
+        bodyColor: lightScheme().onSurface,
+        displayColor: lightScheme().onSurface,
+      ),
+      primaryTextTheme: base.primaryTextTheme.apply(
+        fontFamily: GoogleFonts.poppins().fontFamily,
         bodyColor: lightScheme().onSurface,
         displayColor: lightScheme().onSurface,
       ),
       iconTheme: IconThemeData(color: lightScheme().primary),
       inputDecorationTheme: InputDecorationTheme(
+        floatingLabelStyle: WidgetStateTextStyle.resolveWith(
+          (Set<WidgetState> states) {
+            if (states.contains(WidgetState.focused)) {
+              return TextStyle(color: lightScheme().onSurface);
+            }
+            return TextStyle(color: lightScheme().onSurface);
+          },
+        ),
         filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.all(12),
+        hintStyle: const TextStyle(fontSize: 12),
+        fillColor: Colors.white.withOpacity(0.5),
+        labelStyle: TextStyle(color: lightScheme().onSurface),
+        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: lightScheme().outline),
+          borderSide: const BorderSide(color: Colors.transparent),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: lightScheme().outline),
+          borderSide: const BorderSide(color: Colors.transparent),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -95,52 +145,65 @@ class SportyElegantMinimalTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
-          surfaceTintColor: lightScheme().onPrimary
-        )
+          backgroundColor: lightButtonBackground,
+          minimumSize: Size(double.infinity, buttonHeight),
+        ),
       ),
-      primaryTextTheme: base.primaryTextTheme.apply(
-        bodyColor: lightScheme().onSurface,
-        displayColor: lightScheme().onSurface,
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: lightScheme().primary,
+        selectionColor: lightScheme().primary.withOpacity(0.5),
+        selectionHandleColor: lightScheme().primary,
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: moonlightBlue,
-      )
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+          color: moonlightBlue, linearMinHeight: buttonHeight),
     );
   }
 
   static ColorScheme darkScheme() {
     return ColorScheme(
       brightness: Brightness.dark,
-      primary: moonlightBlue,
+      primary: moonlightBlueUnderDark,
       onPrimary: Colors.white,
-      primaryContainer: moonlightBlue,
+      primaryContainer: primaryContainerDark,
       onPrimaryContainer: Colors.white,
-      secondary: const Color(0xFFF5D79A),
-      onSecondary: const Color(0xFF3F301D),
-      secondaryContainer: const Color(0xFF3F301D),
-      onSecondaryContainer: const Color(0xFFF5D79A),
-      surface: const Color(0xFF1E1E1E),
+      secondary: secondaryDark,
+      onSecondary: onSecondaryContainerLight,
+      secondaryContainer: secondaryContainerDark,
+      onSecondaryContainer: secondaryDark,
+      surface: const Color.fromARGB(255, 30, 30, 30),
       onSurface: Colors.white,
-      error: const Color(0xFFCF6679),
+      error: const Color.fromARGB(255, 207, 102, 121),
       onError: Colors.black,
-      surfaceContainerHighest: const Color(0xFF404040),
-      onSurfaceVariant: const Color(0xFFCCCCCC),
-      outline: const Color(0xFF757575),
+      surfaceContainerHighest: surfaceContainerHighestDark,
+      onSurfaceVariant: onSurfaceVariantDark,
+      outline: outlineDark,
       shadow: Colors.black.withOpacity(0.5),
       scrim: Colors.black.withOpacity(0.5),
       inverseSurface: Colors.white,
-      inversePrimary: moonlightBlue,
+      inversePrimary: moonlightBlueUnderDark,
     );
   }
 
   ThemeData dark() {
     final base = ThemeData.dark();
+    final buttonHeight =
+        base.elevatedButtonTheme.style?.minimumSize?.resolve({})?.height ??
+            48.0;
     return base.copyWith(
       colorScheme: darkScheme(),
       primaryColor: darkScheme().primary,
-      scaffoldBackgroundColor: darkScheme().surface,
+      scaffoldBackgroundColor: Colors.transparent,
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.fuchsia: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.windows: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+        },
+      ),
       appBarTheme: AppBarTheme(
-        backgroundColor: darkScheme().primary,
+        backgroundColor: darkScheme().primary.withOpacity(0),
         foregroundColor: darkScheme().onPrimary,
         elevation: 0,
       ),
@@ -151,7 +214,13 @@ class SportyElegantMinimalTheme {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
-      textTheme: textTheme.apply(
+      textTheme: base.textTheme.apply(
+        fontFamily: GoogleFonts.poppins().fontFamily,
+        bodyColor: darkScheme().onSurface,
+        displayColor: darkScheme().onSurface,
+      ),
+      primaryTextTheme: base.primaryTextTheme.apply(
+        fontFamily: GoogleFonts.poppins().fontFamily,
         bodyColor: darkScheme().onSurface,
         displayColor: darkScheme().onSurface,
       ),
@@ -159,22 +228,32 @@ class SportyElegantMinimalTheme {
         color: darkScheme().onPrimary,
         shadows: [
           Shadow(
-            color: moonlightBlue.withOpacity(0.5), // Glow color
-            blurRadius: 8.0, // Adjust blur radius
+            color: moonlightBlueUnderDark.withOpacity(0.5),
+            blurRadius: 8.0,
           ),
         ],
       ),
       inputDecorationTheme: InputDecorationTheme(
+        floatingLabelStyle: WidgetStateTextStyle.resolveWith(
+          (Set<WidgetState> states) {
+            if (states.contains(WidgetState.focused)) {
+              return TextStyle(color: darkScheme().onSurface);
+            }
+            return TextStyle(color: darkScheme().onSurface);
+          },
+        ),
         filled: true,
-        fillColor: const Color(0xFF1E1E1E),
-        contentPadding: const EdgeInsets.all(12),
+        hintStyle: const TextStyle(fontSize: 12),
+        fillColor: const Color.fromARGB(255, 30, 30, 30).withOpacity(0.5),
+        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        labelStyle: TextStyle(color: darkScheme().onSurface),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: darkScheme().outline),
+          borderSide: const BorderSide(color: Colors.transparent),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: darkScheme().outline),
+          borderSide: const BorderSide(color: Colors.transparent),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -183,20 +262,22 @@ class SportyElegantMinimalTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.all(0),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
-          surfaceTintColor: darkScheme().onPrimary
-        )
+          backgroundColor: darkButtonBackground,
+          minimumSize: Size(double.infinity, buttonHeight)
+        ),
       ),
-      primaryTextTheme: base.primaryTextTheme.apply(
-        bodyColor: darkScheme().onSurface,
-        displayColor: darkScheme().onSurface,
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: darkScheme().primary,
+        selectionColor: darkScheme().primary.withOpacity(0.75),
+        selectionHandleColor: darkScheme().primary,
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: moonlightBlue,
-      )
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+          color: moonlightBlueUnderDark, linearMinHeight: buttonHeight),
     );
   }
 }
