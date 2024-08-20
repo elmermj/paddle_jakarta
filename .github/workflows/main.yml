@@ -1,0 +1,30 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Dart
+
+on:
+  push:
+    branches: [ "development" ]
+  pull_request:
+    branches: [ "development" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Firebase Options
+      run: |
+        echo "${{ secrets.DEV_FIREBASE_CONFIG }}" | base64 --decode > assets/firebase_options.json
+
+    - name: Set up Google Services
+      run: |
+        echo "${{ secrets.DEV_GOOGLE_SERVICES }}" | base64 --decode > android/app/google-services.json
+
+    - name: Build
+      run: flutter build apk
