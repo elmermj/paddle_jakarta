@@ -26,7 +26,7 @@ class AuthForgotView extends StackedView<AuthViewModel> {
       child: Scaffold(
         appBar: CustomAppBar(
           title: 'Forgot Password',
-          onBackFunction: ()=> viewModel.initializeVariables(),
+          onBackFunction: ()=> viewModel.initializeVariables(true),
         ),
         body: _buildBody(viewModel: viewModel, context: context),
       ),

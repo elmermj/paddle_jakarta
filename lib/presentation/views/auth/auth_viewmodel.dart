@@ -30,14 +30,13 @@ class AuthViewModel extends BaseViewModel {
   bool isForgotEmailSent = false;
   bool isLoading = false;
 
-  initializeVariables(){
+  initializeVariables(bool fromForgot) {
     emailController = TextEditingController();
     emailConfirmController = TextEditingController();
     phoneNumberController = TextEditingController();
     passwordController = TextEditingController();
     passwordConfirmController = TextEditingController();
     nameController = TextEditingController();
-    indexState = 0;
     isEmailCommitLoading = false;
     isGoogleLoginLoading = false;
     isVisible = false;
@@ -45,6 +44,9 @@ class AuthViewModel extends BaseViewModel {
     isBouncing = false;
     isForgotEmailSent = false;
     isLoading = false;
+    if(fromForgot) {
+      indexState = 0;
+    }
   }
 
   Future<void> onLogin() async {
@@ -91,20 +93,6 @@ class AuthViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  resetControllers() {
-    emailController.clear();
-    emailConfirmController.clear();
-    phoneNumberController.clear();
-    passwordController.clear();
-    passwordConfirmController.clear();
-    nameController.clear();
-    isEmailCommitLoading = false;
-    isGoogleLoginLoading = false;
-    isVisible = false;
-    isConfirmVisible = false;
-    isBouncing = false;
-  }
-
   forgotIconBounce() async {
     isBouncing = !isBouncing;
     notifyListeners();
@@ -112,7 +100,7 @@ class AuthViewModel extends BaseViewModel {
 
   void switchAuthState({required int index}) {
     indexState = index;
-    resetControllers();
+    initializeVariables(false);
     notifyListeners();
   }
 
