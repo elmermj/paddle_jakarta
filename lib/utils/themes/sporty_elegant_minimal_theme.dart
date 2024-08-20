@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:paddle_jakarta/app/app.locator.dart';
+import 'package:paddle_jakarta/services/theme_service.dart';
 
 class SportyElegantMinimalTheme {
   final TextTheme textTheme;
@@ -68,14 +70,13 @@ class SportyElegantMinimalTheme {
       scrim: Colors.black.withOpacity(0.2),
       inverseSurface: moonlightBlue,
       inversePrimary: const Color.fromARGB(255, 53, 122, 189),
+      surfaceBright: Colors.white,
     );
   }
 
   ThemeData light() {
     final base = ThemeData.light();
-    final buttonHeight =
-        base.elevatedButtonTheme.style?.minimumSize?.resolve({})?.height ??
-            48.0;
+    final buttonHeight = base.elevatedButtonTheme.style?.minimumSize?.resolve({})?.height ?? 48.0;
     return base.copyWith(
       colorScheme: lightScheme(),
       primaryColor: moonlightBlue,
@@ -146,7 +147,7 @@ class SportyElegantMinimalTheme {
             borderRadius: BorderRadius.circular(8),
           ),
           backgroundColor: lightButtonBackground,
-          minimumSize: Size(double.infinity, buttonHeight),
+          minimumSize: Size(double.infinity, buttonHeight ??  48.0),
         ),
       ),
       textSelectionTheme: TextSelectionThemeData(
@@ -181,14 +182,13 @@ class SportyElegantMinimalTheme {
       scrim: Colors.black.withOpacity(0.5),
       inverseSurface: Colors.white,
       inversePrimary: moonlightBlueUnderDark,
+      surfaceBright: Colors.black,
     );
   }
 
   ThemeData dark() {
     final base = ThemeData.dark();
-    final buttonHeight =
-        base.elevatedButtonTheme.style?.minimumSize?.resolve({})?.height ??
-            48.0;
+    final buttonHeight = base.elevatedButtonTheme.style?.minimumSize?.resolve({})?.height ?? 48.0;
     return base.copyWith(
       colorScheme: darkScheme(),
       primaryColor: darkScheme().primary,
@@ -268,7 +268,7 @@ class SportyElegantMinimalTheme {
             borderRadius: BorderRadius.circular(8),
           ),
           backgroundColor: darkButtonBackground,
-          minimumSize: Size(double.infinity, buttonHeight)
+          minimumSize: Size(double.infinity, buttonHeight ??  48.0),
         ),
       ),
       textSelectionTheme: TextSelectionThemeData(

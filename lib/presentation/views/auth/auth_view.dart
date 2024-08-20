@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:paddle_jakarta/app/app.locator.dart';
+import 'package:paddle_jakarta/domain/use_cases/auth/forgot_password.dart';
+import 'package:paddle_jakarta/domain/use_cases/auth/login_email.dart';
+import 'package:paddle_jakarta/domain/use_cases/auth/login_google.dart';
+import 'package:paddle_jakarta/domain/use_cases/auth/register_email.dart';
 import 'package:paddle_jakarta/presentation/common/ui_helpers.dart';
 import 'package:paddle_jakarta/presentation/widgets/auth_form.dart';
 import 'package:paddle_jakarta/utils/themes/sporty_elegant_minimal_theme.dart';
@@ -17,10 +22,10 @@ class AuthView extends StackedView<AuthViewModel> {
   ) {
     return Container(
       decoration: BoxDecoration(
-        gradient: SportyElegantMinimalTheme.appBackgroundGradient(Theme.of(context).colorScheme.surface,),
+        gradient: SportyElegantMinimalTheme.appBackgroundGradient(Theme.of(context).colorScheme.surfaceBright,),
       ),
       child: Scaffold(
-        body: _buildBody(viewModel: viewModel, context: context),
+        body: Center(child: _buildBody(viewModel: viewModel, context: context)),
         bottomNavigationBar: _buildNavBar(viewModel, context)
       ),
     );
@@ -28,6 +33,9 @@ class AuthView extends StackedView<AuthViewModel> {
 
   Container _buildBody({required AuthViewModel viewModel, required BuildContext context}) {
     return Container(
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width < 480 ? MediaQuery.of(context).size.width : 480,
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Stack(
         children: [
@@ -92,61 +100,71 @@ class AuthView extends StackedView<AuthViewModel> {
                     ),
                   );
                 },
-                child: AuthForm(
-                  suffixIcons: [
-                    IconButton(
-                      icon: Icon(
-                        viewModel.isVisible
-                      ? Icons.visibility
-                      : Icons.visibility_off
+                child: GestureDetector(
+                  // swipe left or right to switch between login and register
+                  onHorizontalDragUpdate: (details) {
+                    if (details.delta.dx > 0) {
+                      viewModel.switchAuthState(index: 0);
+                    } else if (details.delta.dx < 0) {
+                      viewModel.switchAuthState(index: 1);
+                    }
+                  },
+                  child: AuthForm(
+                    suffixIcons: [
+                      IconButton(
+                        icon: Icon(
+                          viewModel.isVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off
+                        ),
+                        onPressed: () => viewModel.toggleVisibility(),
                       ),
-                      onPressed: () => viewModel.toggleVisibility(),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        viewModel.isConfirmVisible
-                      ? Icons.visibility
-                      : Icons.visibility_off
+                      IconButton(
+                        icon: Icon(
+                          viewModel.isConfirmVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off
+                        ),
+                        onPressed: () => viewModel.toggleConfirmVisibility(),
                       ),
-                      onPressed: () => viewModel.toggleConfirmVisibility(),
+                    ],
+                    isPasswords: [
+                      viewModel.isVisible,
+                      viewModel.isConfirmVisible
+                    ],
+                    viewModel: viewModel,
+                    index: viewModel.indexState,
+                    key: ValueKey<int>(viewModel.indexState),
+                    emailLoginWidget: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
+                      child: viewModel.isEmailCommitLoading
+                    ? const CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: () => viewModel.onLogin(),
+                        child: const Text('Login'),
+                      ),
                     ),
-                  ],
-                  isPasswords: [
-                    viewModel.isVisible,
-                    viewModel.isConfirmVisible
-                  ],
-                  viewModel: viewModel,
-                  index: viewModel.indexState,
-                  key: ValueKey<int>(viewModel.indexState),
-                  emailLoginWidget: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
-                    child: viewModel.isEmailCommitLoading
-                  ? const CircularProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: () => viewModel.onLogin(),
-                      child: const Text('Login'),
+                    emailRegisterWidget: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
+                      child: viewModel.isEmailCommitLoading
+                    ? const CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: () => viewModel.onRegister(),
+                        child: const Text('Register'),
+                      ),
                     ),
-                  ),
-                  emailRegisterWidget: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
-                    child: viewModel.isEmailCommitLoading
-                  ? const CircularProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: () => viewModel.onRegister(),
-                      child: const Text('Register'),
+                    googleLoginWidget: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
+                      child: viewModel.isGoogleLoginLoading
+                    ? const CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: () => viewModel.onGoogleLogin(),
+                        child: const Text('Login with Google'),
+                      )
                     ),
-                  ),
-                  googleLoginWidget: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
-                    child: viewModel.isGoogleLoginLoading
-                  ? const LinearProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: () => viewModel.onGoogleLogin(),
-                      child: const Text('Login with Google'),
-                    )
                   ),
                 ),
               ),
@@ -214,5 +232,12 @@ class AuthView extends StackedView<AuthViewModel> {
   @override
   AuthViewModel viewModelBuilder(
     BuildContext context,
-  ) => AuthViewModel();
+  ) {
+    return AuthViewModel(
+      locator<LoginEmail>(),
+      locator<LoginGoogle>(),
+      locator<RegisterEmail>(),
+      locator<ForgotPassword>()
+    );
+  }
 }

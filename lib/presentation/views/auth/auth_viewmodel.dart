@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paddle_jakarta/app/app.locator.dart';
 import 'package:paddle_jakarta/app/app.router.dart';
+import 'package:paddle_jakarta/domain/use_cases/auth/forgot_password.dart';
+import 'package:paddle_jakarta/domain/use_cases/auth/login_email.dart';
+import 'package:paddle_jakarta/domain/use_cases/auth/login_google.dart';
+import 'package:paddle_jakarta/domain/use_cases/auth/register_email.dart';
 import 'package:paddle_jakarta/services/theme_service.dart';
+import 'package:paddle_jakarta/utils/tools/log.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -29,6 +34,21 @@ class AuthViewModel extends BaseViewModel {
 
   bool isForgotEmailSent = false;
   bool isLoading = false;
+
+  final LoginEmail _loginEmail;
+  final LoginGoogle _loginGoogle;
+  final RegisterEmail _registerEmail;
+  final ForgotPassword _forgotPassword;
+
+  String forgotPasswordDetail = 'We have sent you an email with a link to reset your password';
+
+  AuthViewModel(
+    this._loginEmail,
+    this._loginGoogle,
+    this._registerEmail,
+    this._forgotPassword
+  );
+
 
   initializeVariables(bool fromForgot) {
     emailController = TextEditingController();
@@ -62,20 +82,45 @@ class AuthViewModel extends BaseViewModel {
   Future<void> onGoogleLogin() async {
     isGoogleLoginLoading = true;
     notifyListeners();
-    await Future.delayed(const Duration(seconds: 3));
-    isGoogleLoginLoading = false;
-    notifyListeners();
+    final result = await _loginGoogle();
+    result.fold(
+      (failure){
+        isGoogleLoginLoading = false;
+        notifyListeners();
+        locator<DialogService>().showDialog(
+          title: 'Error',
+          description: failure,
+        );
+      }, 
+      (user){
+        isGoogleLoginLoading = false;
+        notifyListeners();
+        _navigationService.replaceWithHomeView();
+      }
+    );
   }
 
   onForgotPassword() async {
     isLoading = true;
     notifyListeners();
-    await Future.delayed(const Duration(seconds: 3)).then((value) {
-      isLoading = false;
-      isForgotEmailSent = true;
-      notifyListeners();
-    });
-    startCountdown();
+    final result = await _forgotPassword(emailController.text);
+    result.fold(
+      (failure){
+        Log.red("Failed to send email: $failure");
+        forgotPasswordDetail = failure;
+        Log.pink(forgotPasswordDetail);
+        isLoading = false;
+        isForgotEmailSent = true;
+        notifyListeners();
+        startCountdown();
+      },
+      (unit){
+        isLoading = false;
+        isForgotEmailSent = true;
+        notifyListeners();
+        startCountdown();
+      }
+    );
   }
 
   void toggleTheme() {

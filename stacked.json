@@ -1,6 +1,6 @@
 {
-    "bottom_sheets_path": "ui/bottom_sheets",
-    "dialogs_path": "ui/dialogs",
+    "bottom_sheets_path": "presentation/bottom_sheets",
+    "dialogs_path": "presentation/dialogs",
     "line_length": 80,
     "locator_name": "locator",
     "prefer_web": false,
@@ -12,6 +12,6 @@
     "test_views_path": "viewmodels",
     "test_widgets_path": "widget_models",
     "v1": false,
-    "views_path": "ui/views",
-    "widgets_path": "ui/widgets/common"
+    "views_path": "presentation/views",
+    "widgets_path": "presentation/widgets/common"
 }

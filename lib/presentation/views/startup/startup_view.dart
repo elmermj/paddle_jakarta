@@ -18,7 +18,7 @@ class StartupView extends StackedView<StartupViewModel> {
     return Container(
       decoration: BoxDecoration(
         gradient: SportyElegantMinimalTheme.appBackgroundGradient(
-          Theme.of(context).colorScheme.surface,
+          Theme.of(context).colorScheme.surfaceBright,
         ),
       ),
       child: const Scaffold(
