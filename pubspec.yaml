@@ -16,6 +16,8 @@ dependencies:
   cloud_firestore:
   google_sign_in:
   firebase_auth:
+  firebase_core:
+  firebase_storage:
   google_fonts: ^6.2.1
   lucide_icons:
   flutter_any_logo: 
@@ -33,3 +35,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icons/
+    - assets/firebase_options.json
