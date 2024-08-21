@@ -691,6 +691,15 @@ class MockDialogService extends _i1.Mock implements _i3.DialogService {
 /// See the documentation for Mockito's code generation for more information.
 class MockThemeService extends _i1.Mock implements _i7.ThemeService {
   @override
+  set buttonHeight(double? _buttonHeight) => super.noSuchMethod(
+        Invocation.setter(
+          #buttonHeight,
+          _buttonHeight,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   bool get isDarkMode => (super.noSuchMethod(
         Invocation.getter(#isDarkMode),
         returnValue: false,

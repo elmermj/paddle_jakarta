@@ -1,15 +1,21 @@
 import 'package:hive/hive.dart';
+import 'package:paddle_jakarta/data/models/user_model.dart';
 
 class LocalUserDataSource {
-  final Box _box;
+  final Box<UserModel> _box;
+  final userKey = 'userData';
 
   LocalUserDataSource(this._box);
 
-  Future<void> saveUser(String key, String value) async {
-    await _box.put(key, value);
+  saveUserData(UserModel value) async {
+    await _box.put(userKey, value);
   }
 
-  String? getUser(String key) {
-    return _box.get(key);
+  UserModel? getUser() {
+    return _box.get(userKey);
+  }
+
+  clearUserData() async {
+    await _box.delete(userKey);
   }
 }

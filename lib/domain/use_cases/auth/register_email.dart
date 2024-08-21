@@ -6,7 +6,7 @@ class RegisterEmail {
 
   RegisterEmail(this.repository);
 
-  Future<Either<String, Unit>> call(String email, String password) async {
-    return repository.registerEmail(email, password);
+  Future<Either<String, Unit>> call(String email, String password, String name) async {
+    return repository.registerEmail(email, password, name);
   }
 }

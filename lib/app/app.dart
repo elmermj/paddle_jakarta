@@ -4,7 +4,7 @@ import 'package:paddle_jakarta/presentation/views/home/home_view.dart';
 import 'package:paddle_jakarta/presentation/views/startup/startup_view.dart';
 import 'package:stacked/stacked_annotations.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'package:paddle_jakarta/presentation/views/auth/auth_view.dart';
+import 'package:paddle_jakarta/presentation/views/auth/views/auth_view.dart';
 import 'package:paddle_jakarta/presentation/views/profile/profile_view.dart';
 import 'package:paddle_jakarta/presentation/views/match/match_view.dart';
 import 'package:paddle_jakarta/services/theme_service.dart';

@@ -9,9 +9,9 @@ class RemoteUserDataSource {
 
   RemoteUserDataSource(this._firebaseAuth);
 
-  Future<void> loginEmail(String email, String password) async {
+  Future<UserCredential> loginEmail(String email, String password) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+      return await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
     } catch (e) {
       Log.red('Failed to login with email: $e');
       throw Exception('Failed to login: $e');
@@ -46,6 +46,7 @@ class RemoteUserDataSource {
       );
       final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
       Log.yellow('Google sign-in successful');
+      Log.green('${userCredential.user}');
 
       return userCredential;      
     } catch (e) {
@@ -54,9 +55,10 @@ class RemoteUserDataSource {
     }
   }
 
-  Future<void> registerEmail(String email, String password) async {
+  Future<void> registerEmail(String email, String password, String name) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+      final userCred = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+      await userCred.user?.updateDisplayName(name);
     } catch (e) {
       Log.red('Failed to register with email: $e');
       throw Exception('Failed to register: $e');
@@ -69,5 +71,9 @@ class RemoteUserDataSource {
     } catch (e) {
       throw Exception('$e');
     }
+  }
+
+  Future<void> logout() async {
+    await _firebaseAuth.signOut();
   }
 }

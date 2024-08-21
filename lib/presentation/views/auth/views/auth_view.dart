@@ -9,7 +9,7 @@ import 'package:paddle_jakarta/presentation/widgets/auth_form.dart';
 import 'package:paddle_jakarta/utils/themes/sporty_elegant_minimal_theme.dart';
 import 'package:stacked/stacked.dart';
 
-import 'auth_viewmodel.dart';
+import '../viewmodels/auth_viewmodel.dart';
 
 class AuthView extends StackedView<AuthViewModel> {
   const AuthView({Key? key}) : super(key: key);
@@ -26,7 +26,7 @@ class AuthView extends StackedView<AuthViewModel> {
       ),
       child: Scaffold(
         body: Center(child: _buildBody(viewModel: viewModel, context: context)),
-        bottomNavigationBar: _buildNavBar(viewModel, context)
+        bottomNavigationBar: _buildNavBar(viewModel: viewModel, context: context)
       ),
     );
   }
@@ -41,30 +41,41 @@ class AuthView extends StackedView<AuthViewModel> {
         children: [
           Align(
             alignment: const AlignmentDirectional(0, -0.5),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Paddle Jakarta', style: Theme.of(context).textTheme.headlineLarge),
-                verticalSpaceMedium,
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(100),
-                    onTap: () => viewModel.toggleTheme(),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 150),
-                      transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
-                      child: Icon(
-                        viewModel.themeService.isDarkMode
-                      ? Icons.dark_mode
-                      : Icons.light_mode,
-                        key: ValueKey<bool>(viewModel.themeService.isDarkMode),
-                        size: 32,
+            child: AnimatedSwitcher(
+              duration: Durations.medium2,
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              child: MediaQuery.of(context).viewInsets.bottom != 0
+              ? const SizedBox.shrink()
+              : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Paddle Jakarta', style: Theme.of(context).textTheme.headlineLarge),
+                  verticalSpaceMedium,
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(100),
+                      onTap: () => viewModel.toggleTheme(),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 150),
+                        transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
+                        child: Icon(
+                          viewModel.themeService.isDarkMode
+                        ? Icons.dark_mode
+                        : Icons.light_mode,
+                          key: ValueKey<bool>(viewModel.themeService.isDarkMode),
+                          size: 32,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Align(
@@ -141,7 +152,11 @@ class AuthView extends StackedView<AuthViewModel> {
                       child: viewModel.isEmailCommitLoading
                     ? const CircularProgressIndicator()
                     : ElevatedButton(
-                        onPressed: () => viewModel.onLogin(),
+                        onPressed: () => viewModel.onLogin(
+                          viewModel.emailController.text,
+                          viewModel.passwordController.text,
+                          false
+                        ),
                         child: const Text('Login'),
                       ),
                     ),
@@ -175,7 +190,7 @@ class AuthView extends StackedView<AuthViewModel> {
     );
   }
 
-  Container _buildNavBar(AuthViewModel viewModel, BuildContext context) =>
+  Container _buildNavBar({required AuthViewModel viewModel, required BuildContext context}) =>
   Container(
     width: double.infinity,
     height: kBottomNavigationBarHeight,

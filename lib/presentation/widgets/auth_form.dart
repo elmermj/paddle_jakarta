@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:paddle_jakarta/presentation/common/ui_helpers.dart';
-import 'package:paddle_jakarta/presentation/views/auth/auth_forgot_view.dart';
-import 'package:paddle_jakarta/presentation/views/auth/auth_viewmodel.dart';
+import 'package:paddle_jakarta/presentation/views/auth/views/auth_forgot_view.dart';
+import 'package:paddle_jakarta/presentation/views/auth/viewmodels/auth_viewmodel.dart';
 import 'package:paddle_jakarta/presentation/widgets/custom_text_field.dart';
 
 class AuthForm extends StatelessWidget {
@@ -40,6 +40,7 @@ class AuthForm extends StatelessWidget {
               controller: viewModel.emailController,
               hintText: 'Email',
               keyboardType: TextInputType.emailAddress,
+              valueListenable: viewModel.emailError
             ),
             verticalSpaceSmall,
             CustomTextField(
@@ -49,6 +50,7 @@ class AuthForm extends StatelessWidget {
               keyboardType: TextInputType.visiblePassword,
               isPassword: !isPasswords[0],
               suffixIcon: suffixIcons[0],
+              valueListenable: viewModel.passwordError
             ),
             verticalSpaceSmall,
             Align(
@@ -95,6 +97,7 @@ class AuthForm extends StatelessWidget {
                 controller: viewModel.nameController,
                 hintText: 'Name',
                 keyboardType: TextInputType.name,
+                valueListenable: viewModel.nameError,
               ),
               verticalSpaceSmall,
               CustomTextField(
@@ -102,6 +105,7 @@ class AuthForm extends StatelessWidget {
                 controller: viewModel.emailController,
                 hintText: 'Email',
                 keyboardType: TextInputType.emailAddress,
+                valueListenable: viewModel.emailError
               ),
               verticalSpaceSmall,
               CustomTextField(
@@ -109,6 +113,7 @@ class AuthForm extends StatelessWidget {
                 controller: viewModel.emailConfirmController,
                 hintText: 'Confirm Your Email',
                 keyboardType: TextInputType.emailAddress,
+                valueListenable: viewModel.emailConfirmError
               ),
               verticalSpaceSmall,
               CustomTextField(
@@ -125,15 +130,18 @@ class AuthForm extends StatelessWidget {
                 keyboardType: TextInputType.visiblePassword,
                 isPassword: !isPasswords[0],
                 suffixIcon: suffixIcons[0],
+                valueListenable: viewModel.passwordError
               ),
               verticalSpaceSmall,
               CustomTextField(
-                  labelText: 'Confirm Password',
-                  controller: viewModel.passwordConfirmController,
-                  hintText: 'Confirm Password',
-                  keyboardType: TextInputType.visiblePassword,
-                  isPassword: !isPasswords[1],
-                  suffixIcon: suffixIcons[1]),
+                labelText: 'Confirm Password',
+                controller: viewModel.passwordConfirmController,
+                hintText: 'Confirm Password',
+                keyboardType: TextInputType.visiblePassword,
+                isPassword: !isPasswords[1],
+                suffixIcon: suffixIcons[1],
+                valueListenable: viewModel.passwordConfirmError
+              ),
               verticalSpaceSmall,
               ...[emailRegisterWidget],
               verticalSpaceSmall,

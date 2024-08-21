@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,7 +8,7 @@ import 'package:paddle_jakarta/domain/use_cases/auth/login_email.dart';
 import 'package:paddle_jakarta/domain/use_cases/auth/login_google.dart';
 import 'package:paddle_jakarta/domain/use_cases/auth/register_email.dart';
 import 'package:paddle_jakarta/presentation/common/ui_helpers.dart';
-import 'package:paddle_jakarta/presentation/views/auth/auth_viewmodel.dart';
+import 'package:paddle_jakarta/presentation/views/auth/viewmodels/auth_viewmodel.dart';
 import 'package:paddle_jakarta/presentation/widgets/custom_app_bar.dart';
 import 'package:paddle_jakarta/presentation/widgets/custom_text_field.dart';
 import 'package:paddle_jakarta/utils/themes/sporty_elegant_minimal_theme.dart';
@@ -42,6 +43,9 @@ class AuthForgotView extends StackedView<AuthViewModel> {
     final Color iconColor = Theme.of(context).brightness == Brightness.dark 
                           ? Colors.white 
                           : Colors.black;
+
+    const baseURI = kIsWeb? '':'assets/';
+    
     return Center(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -56,7 +60,7 @@ class AuthForgotView extends StackedView<AuthViewModel> {
               curve: Curves.easeInOut,
               alignment: viewModel.isBouncing ? const AlignmentDirectional(0, -0.9) : const AlignmentDirectional(0, -0.7),
               child: SvgPicture.asset(
-                'icons/question_marks.svg',
+                '${baseURI}icons/question_marks.svg',
                 width: MediaQuery.of(context).size.height < 700 ? 480 * 0.6 : 480,
                 height: MediaQuery.of(context).size.height < 700 ? 480 * 0.6 : 480,
                 fit: BoxFit.fitHeight,
