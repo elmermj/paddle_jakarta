@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:paddle_jakarta/app/app.locator.dart';
-import 'package:paddle_jakarta/services/theme_service.dart';
 
 class SportyElegantMinimalTheme {
   final TextTheme textTheme;
@@ -147,7 +145,7 @@ class SportyElegantMinimalTheme {
             borderRadius: BorderRadius.circular(8),
           ),
           backgroundColor: lightButtonBackground,
-          minimumSize: Size(double.infinity, buttonHeight ??  48.0),
+          minimumSize: Size(double.infinity, buttonHeight),
         ),
       ),
       textSelectionTheme: TextSelectionThemeData(
@@ -268,7 +266,7 @@ class SportyElegantMinimalTheme {
             borderRadius: BorderRadius.circular(8),
           ),
           backgroundColor: darkButtonBackground,
-          minimumSize: Size(double.infinity, buttonHeight ??  48.0),
+          minimumSize: Size(double.infinity, buttonHeight),
         ),
       ),
       textSelectionTheme: TextSelectionThemeData(

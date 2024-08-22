@@ -20,13 +20,15 @@ class AuthView extends StackedView<AuthViewModel> {
     AuthViewModel viewModel,
     Widget? child,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: SportyElegantMinimalTheme.appBackgroundGradient(Theme.of(context).colorScheme.surfaceBright,),
-      ),
-      child: Scaffold(
-        body: Center(child: _buildBody(viewModel: viewModel, context: context)),
-        bottomNavigationBar: _buildNavBar(viewModel: viewModel, context: context)
+    return SafeArea(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: SportyElegantMinimalTheme.appBackgroundGradient(Theme.of(context).colorScheme.surfaceBright,),
+        ),
+        child: Scaffold(
+          body: Center(child: _buildBody(viewModel: viewModel, context: context)),
+          bottomNavigationBar: _buildNavBar(viewModel: viewModel, context: context)
+        ),
       ),
     );
   }

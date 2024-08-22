@@ -1,6 +1,6 @@
 import 'package:paddle_jakarta/presentation/bottom_sheets/notice/notice_sheet.dart';
 import 'package:paddle_jakarta/presentation/dialogs/info_alert/info_alert_dialog.dart';
-import 'package:paddle_jakarta/presentation/views/home/home_view.dart';
+import 'package:paddle_jakarta/presentation/views/home/views/home_view.dart';
 import 'package:paddle_jakarta/presentation/views/startup/startup_view.dart';
 import 'package:stacked/stacked_annotations.dart';
 import 'package:stacked_services/stacked_services.dart';

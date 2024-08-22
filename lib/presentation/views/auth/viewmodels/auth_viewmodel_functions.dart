@@ -70,8 +70,9 @@ extension Functions on AuthViewModel {
         isGoogleLoginLoading = false;
         notifyListeners();
         locator<DialogService>().showDialog(
-          title: 'Error',
-          description: failure,
+          title: failure.contains('Exception')? 'Exception' : 'Error',
+          //only displays after 'Exception:'
+          description: failure.contains('Exception:')? failure.split('Exception:')[1] : failure,
         );
       }, 
       (user){

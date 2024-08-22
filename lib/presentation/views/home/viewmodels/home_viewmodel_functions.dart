@@ -5,17 +5,14 @@ extension Functions on HomeViewModel {
     isDeletingCache = true;
     notifyListeners();
 
-    // Duration and step interval
-    const totalDuration = Duration(milliseconds: 4000); // 4 seconds
-    const stepInterval = Duration(milliseconds: 15); // Update every 100ms
+    const totalDuration = Duration(milliseconds: 4000);
+    const stepInterval = Duration(milliseconds: 15);
 
     int elapsed = 0;
 
-    // Timer to update progress bar
     Timer.periodic(stepInterval, (timer) {
       elapsed += stepInterval.inMilliseconds;
 
-      // Calculate the progress
       double progressValue = 1 - (elapsed / totalDuration.inMilliseconds);
       updateProgress(progressValue);
 
@@ -25,5 +22,25 @@ extension Functions on HomeViewModel {
         notifyListeners();
       }
     });
+  }
+
+  Future<void> logout() async {
+    setBusy(true);
+
+    final result = await _logout();
+
+    result.fold(
+      (failure) {
+        setBusy(false);
+        _dialogService.showCustomDialog(
+          variant: DialogType.infoAlert,
+          title: 'Stacked Rocks!',
+        );
+      },
+      (_) {
+        setBusy(false);
+        _navigationService.clearStackAndShow(Routes.authView);
+      },
+    );
   }
 }

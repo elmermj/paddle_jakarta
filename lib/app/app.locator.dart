@@ -6,6 +6,7 @@
 
 // ignore_for_file: public_member_api_docs, implementation_imports, depend_on_referenced_packages
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:paddle_jakarta/data/helpers/web_client_id_helper.dart';
@@ -50,8 +51,8 @@ Future<void> setupLocator({
 
   // Register Hive Adapters
   await Hive.initFlutter();
-  Hive.registerAdapter(TimestampAdapter());
-  Hive.registerAdapter(UserModelAdapter());
+  Hive.registerAdapter<Timestamp>(TimestampAdapter());
+  Hive.registerAdapter<UserModel>(UserModelAdapter());
 
   // Register Hive Box
   final userDataBox = await Hive.openBox<UserModel>('userDataBox');

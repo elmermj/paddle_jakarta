@@ -55,16 +55,27 @@ class AuthForgotView extends StackedView<AuthViewModel> {
         ),
         child: Stack(
           children: [
-            AnimatedAlign(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              alignment: viewModel.isBouncing ? const AlignmentDirectional(0, -0.9) : const AlignmentDirectional(0, -0.7),
-              child: SvgPicture.asset(
-                '${baseURI}icons/question_marks.svg',
-                width: MediaQuery.of(context).size.height < 700 ? 480 * 0.6 : 480,
-                height: MediaQuery.of(context).size.height < 700 ? 480 * 0.6 : 480,
-                fit: BoxFit.fitHeight,
-                color: iconColor,
+            AnimatedSwitcher(
+              duration: Durations.medium2,
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              child: MediaQuery.of(context).viewInsets.bottom != 0 
+            ? const SizedBox.shrink()
+            : AnimatedAlign(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                alignment: viewModel.isBouncing ? const AlignmentDirectional(0, -0.9) : const AlignmentDirectional(0, -0.7),
+                child: SvgPicture.asset(
+                  '${baseURI}icons/question_marks.svg',
+                  width: MediaQuery.of(context).size.height < 700 ? 480 * 0.6 : 480,
+                  height: MediaQuery.of(context).size.height < 700 ? 480 * 0.6 : 480,
+                  fit: BoxFit.fitHeight,
+                  color: iconColor,
+                ),
               ),
             ),
             Align(

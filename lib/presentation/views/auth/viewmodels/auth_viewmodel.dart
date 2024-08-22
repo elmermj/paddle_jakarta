@@ -12,11 +12,24 @@ import 'package:paddle_jakarta/utils/tools/log.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-part 'auth_viewmodel.form_validator.dart';
-part 'auth_viewmodel.functions.dart';
-part 'auth_viewmodel.state.dart';
+part 'auth_viewmodel_form_validator.dart';
+part 'auth_viewmodel_functions.dart';
+part 'auth_viewmodel_state.dart';
 
 class AuthViewModel extends BaseViewModel {
+
+  final LoginEmail loginEmail;
+  final LoginGoogle loginGoogle;
+  final RegisterEmail registerEmail;
+  final ForgotPassword forgotPassword;
+
+  AuthViewModel(
+    this.loginEmail,
+    this.loginGoogle,
+    this.registerEmail,
+    this.forgotPassword
+  );
+
   final navigationService = locator<NavigationService>();
   final themeService = locator<ThemeService>();
   final dialogService = locator<DialogService>();
@@ -41,11 +54,6 @@ class AuthViewModel extends BaseViewModel {
   bool isForgotEmailSent = false;
   bool isLoading = false;
 
-  final LoginEmail loginEmail;
-  final LoginGoogle loginGoogle;
-  final RegisterEmail registerEmail;
-  final ForgotPassword forgotPassword;
-
   String forgotPasswordDetail = 'We have sent you an email with a link to reset your password';
 
   ValueNotifier<String?> emailError = ValueNotifier(null);
@@ -53,13 +61,6 @@ class AuthViewModel extends BaseViewModel {
   ValueNotifier<String?> passwordError = ValueNotifier(null);
   ValueNotifier<String?> passwordConfirmError = ValueNotifier(null);
   ValueNotifier<String?> nameError = ValueNotifier(null);
-
-  AuthViewModel(
-    this.loginEmail,
-    this.loginGoogle,
-    this.registerEmail,
-    this.forgotPassword
-  );
 
   initializeVariables(bool fromForgot) {
     emailController = TextEditingController();

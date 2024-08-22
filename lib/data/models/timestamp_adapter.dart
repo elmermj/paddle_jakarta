@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TimestampAdapter extends TypeAdapter<Timestamp> {
   @override
-  final int typeId = 255;
+  final int typeId = 1;
 
   @override
   Timestamp read(BinaryReader reader) {

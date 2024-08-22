@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:paddle_jakarta/presentation/views/home/home_settings_view.dart';
+import 'package:paddle_jakarta/presentation/views/home/views/home_settings_view.dart';
+import 'package:paddle_jakarta/presentation/views/home/views/home_timeline_view.dart';
 import 'package:paddle_jakarta/utils/themes/sporty_elegant_minimal_theme.dart';
 import 'package:stacked/stacked.dart';
 
-import 'viewmodels/home_viewmodel.dart';
+import '../viewmodels/home_viewmodel.dart';
 
 class HomeView extends StackedView<HomeViewModel> {
   const HomeView({Key? key}) : super(key: key);
@@ -15,13 +16,15 @@ class HomeView extends StackedView<HomeViewModel> {
     HomeViewModel viewModel,
     Widget? child,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: SportyElegantMinimalTheme.appBackgroundGradient(Theme.of(context).colorScheme.surfaceBright,),
-      ),
-      child: Scaffold(
-        body: Center(child: _buildBody(viewModel: viewModel, context: context)),
-        bottomNavigationBar: _buildNavBar(viewModel: viewModel, context: context)
+    return SafeArea(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: SportyElegantMinimalTheme.appBackgroundGradient(Theme.of(context).colorScheme.surfaceBright,),
+        ),
+        child: Scaffold(
+          body: Center(child: _buildBody(viewModel: viewModel, context: context)),
+          bottomNavigationBar: _buildNavBar(viewModel: viewModel, context: context)
+        ),
       ),
     );
   }
@@ -36,34 +39,7 @@ class HomeView extends StackedView<HomeViewModel> {
         builder: (context) {
           switch(viewModel.indexState) {
             case 0:
-              return Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      margin: const EdgeInsets.only(top: 24),
-                      child: AspectRatio(
-                        aspectRatio: 21/9,
-                        child: Stack(
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Container(
-                                padding: const EdgeInsets.only(left: 8, top: 8),
-                                child: const Text('Your last macth against player'),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              );
+              return HomeTimelineView(viewModel: viewModel,);
             case 1:
               return Stack(
                 children: [
@@ -84,7 +60,7 @@ class HomeView extends StackedView<HomeViewModel> {
                             alignment: Alignment.topLeft,
                             child: Container(
                               padding: const EdgeInsets.only(left: 8, top: 8),
-                              child: const Text('Your last macth against player'),
+                              child: const Text('Your last match against player'),
                             ),
                           )
                         ],
@@ -113,7 +89,7 @@ class HomeView extends StackedView<HomeViewModel> {
                             alignment: Alignment.topLeft,
                             child: Container(
                               padding: const EdgeInsets.only(left: 8, top: 8),
-                              child: const Text('Your last macth against player'),
+                              child: const Text('Your last match against player'),
                             ),
                           )
                         ],
@@ -142,7 +118,7 @@ class HomeView extends StackedView<HomeViewModel> {
                             alignment: Alignment.topLeft,
                             child: Container(
                               padding: const EdgeInsets.only(left: 8, top: 8),
-                              child: const Text('Your last macth against player'),
+                              child: const Text('Your last match against player'),
                             ),
                           )
                         ],
@@ -227,15 +203,6 @@ class HomeView extends StackedView<HomeViewModel> {
         ? Theme.of(context).colorScheme.primary
         : Theme.of(context).colorScheme.onSurface,
         )
-        
-        // Text(
-        //   title,
-        //   style: TextStyle(
-        //     color: index == viewModel.indexState
-        //   ? Theme.of(context).colorScheme.primary
-        //   : Theme.of(context).colorScheme.onSurface,
-        //   ),
-        // ),
       ),
     ),
   );
@@ -245,4 +212,6 @@ class HomeView extends StackedView<HomeViewModel> {
     BuildContext context,
   ) => HomeViewModel();
 }
+
+
 
