@@ -56,7 +56,7 @@ class AuthView extends StackedView<AuthViewModel> {
               : Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Paddle Jakarta', style: Theme.of(context).textTheme.headlineLarge),
+                  Text('Padel Jakarta', style: Theme.of(context).textTheme.headlineLarge),
                   verticalSpaceMedium,
                   Align(
                     alignment: Alignment.centerRight,

@@ -5,9 +5,9 @@ extension Functions on AuthViewModel {
   Future<void> onLogin(String email, String password, bool fromRegister) async {
     isEmailCommitLoading = true;
     notifyListeners();
+
     if(!isLoginFormValid()){
       isEmailCommitLoading = false;
-      notifyListeners();
       return;
     }
 
@@ -86,6 +86,11 @@ extension Functions on AuthViewModel {
   onForgotPassword() async {
     isLoading = true;
     notifyListeners();
+    validateEmail();
+    if(emailError.value != null) {
+      isLoading = false;
+      return;
+    }
     final result = await forgotPassword(emailController.text);
     result.fold(
       (failure){

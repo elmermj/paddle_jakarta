@@ -11,7 +11,7 @@ extension FormValidator on AuthViewModel {
   }
 
   void validateEmailMatch() {
-    if (emailConfirmController.text != emailController.text) {
+    if (emailConfirmController.text != emailController.text || emailConfirmController.text.isEmpty) {
       emailConfirmError.value = 'Emails do not match.';
     } else {
       emailConfirmError.value = null;
@@ -27,10 +27,18 @@ extension FormValidator on AuthViewModel {
   }
 
   void validatePasswordMatch() {
-    if (passwordConfirmController.text != passwordController.text) {
+    if (passwordConfirmController.text != passwordController.text || passwordConfirmController.text.isEmpty) {
       passwordConfirmError.value = 'Passwords do not match.';
     } else {
       passwordConfirmError.value = null;
+    }
+  }
+
+  void validatePhoneNumber(){
+    if(phoneNumberController.text.isEmpty){
+      phoneNumberError.value = 'Phone number is required.';
+    } else {
+      phoneNumberError.value = null;
     }
   }
 
@@ -43,6 +51,12 @@ extension FormValidator on AuthViewModel {
   }
   
   bool isRegisterFormValid() {
+    validateEmail();
+    validateEmailMatch();
+    validatePassword();
+    validatePasswordMatch();
+    validateName();
+    validatePhoneNumber();
     return emailError.value == null &&
         emailConfirmError.value == null &&
         passwordError.value == null &&
@@ -51,6 +65,8 @@ extension FormValidator on AuthViewModel {
   }
 
   bool isLoginFormValid(){
+    validateEmail();
+    validatePassword();
     return emailError.value == null &&
         passwordError.value == null;
   }

@@ -17,9 +17,21 @@ extension State on HomeViewModel {
     notifyListeners();
   }
 
-  toggleLastMatchCardMinimized() {
-    isLastMatchCardMinimized = !isLastMatchCardMinimized; // Update the actual state variable
+  // void toggleLastMatchCardMinimized() {
+  //   isAnimating = true; // Set to true to indicate animation is in progress
+  //   notifyListeners();
+    
+  //   // Perform the transition animation, then set _isAnimating to false
+  //   Future.delayed(Durations.short3, () {
+  //     isLastMatchCardMinimized = !isLastMatchCardMinimized;
+  //     isAnimating = false; // Set to false once animation is complete
+  //     notifyListeners();
+  //   });
+  // }
+
+  void toggleLastMatchCardMinimized() {
+    isLastMatchCardMinimized = !isLastMatchCardMinimized;
     notifyListeners();
   }
-  
+
 }

@@ -66,7 +66,6 @@ class _MatchHistoryCardWidgetState extends State<MatchHistoryCardWidget> with Si
                 ),
               ],
             ),
-            margin: const EdgeInsets.only(top: 24),
             child: AspectRatio(
               aspectRatio: 18 / 9,
               child: Stack(

@@ -121,6 +121,7 @@ class AuthForm extends StatelessWidget {
                 controller: viewModel.phoneNumberController,
                 hintText: 'Phone Number',
                 keyboardType: TextInputType.phone,
+                valueListenable: viewModel.phoneNumberError,
               ),
               verticalSpaceSmall,
               CustomTextField(

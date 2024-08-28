@@ -91,7 +91,8 @@ class AuthForgotView extends StackedView<AuthViewModel> {
                   ),
                   verticalSpaceMedium,
                   CustomTextField(
-                    controller: viewModel.emailController, 
+                    controller: viewModel.emailController,
+                    valueListenable: viewModel.emailError,
                     hintText: 'Your email', 
                     labelText: 'Email'
                   ),

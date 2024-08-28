@@ -24,6 +24,7 @@ class HomeViewModel extends BaseViewModel {
 
   bool isDeletingCache = false;
   bool isLastMatchCardMinimized = false;
+  bool isAnimating = false;
   double progress = 1.0;
 
   void showDialog() {

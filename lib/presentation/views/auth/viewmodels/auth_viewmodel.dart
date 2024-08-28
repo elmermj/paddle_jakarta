@@ -61,6 +61,7 @@ class AuthViewModel extends BaseViewModel {
   ValueNotifier<String?> passwordError = ValueNotifier(null);
   ValueNotifier<String?> passwordConfirmError = ValueNotifier(null);
   ValueNotifier<String?> nameError = ValueNotifier(null);
+  ValueNotifier<String?> phoneNumberError = ValueNotifier(null);
 
   initializeVariables(bool fromForgot) {
     emailController = TextEditingController();
