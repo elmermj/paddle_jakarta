@@ -28,11 +28,6 @@ class TimelineItemWidget extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Stack(
-            children: _buildTimelineIndicators(context),
-          ),
-        ),
-        Expanded(
           flex: 9,
           child: Container(
             decoration: BoxDecoration(
@@ -42,7 +37,7 @@ class TimelineItemWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
@@ -58,6 +53,11 @@ class TimelineItemWidget extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+        ),
+        Expanded(
+          child: Stack(
+            children: _buildTimelineIndicators(context),
           ),
         ),
       ],
