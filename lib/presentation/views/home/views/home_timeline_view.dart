@@ -134,9 +134,9 @@ class HomeTimelineView extends StatelessWidget {
           return SizedBox(
             height: 100,
             child: TimelineItemWidget(
-              timelineItem: viewModel.timelineItems[index],
-              isLast: viewModel.timelineItems.last == viewModel.timelineItems[index],
-              isFirst: viewModel.timelineItems.first == viewModel.timelineItems[index],
+              timelineItem: viewModel.timelineItems.toList()[index],
+              isLast: viewModel.timelineItems.last == viewModel.timelineItems.toList()[index],
+              isFirst: viewModel.timelineItems.first == viewModel.timelineItems.toList()[index],
             ),
           );
         }

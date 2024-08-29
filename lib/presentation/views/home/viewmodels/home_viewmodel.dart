@@ -38,7 +38,7 @@ class HomeViewModel extends BaseViewModel {
   bool isEditingProfile = false;
   double progress = 1.0;
 
-  List<TimelineItemModel> timelineItems = [];
+  Set<TimelineItemModel> timelineItems = {};
 
   void showDialog() {
     _dialogService.showCustomDialog(

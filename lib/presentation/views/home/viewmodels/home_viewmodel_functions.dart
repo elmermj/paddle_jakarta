@@ -59,7 +59,7 @@ extension Functions on HomeViewModel {
         for(var timelineItem in timelineItemsResponse) {
           Log.green('timelineItem: ${timelineItem.toJson()}');
         }
-        timelineItems = timelineItemsResponse;
+        timelineItems = timelineItemsResponse.toSet();
         notifyListeners();
       },
     );
