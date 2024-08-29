@@ -3,10 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:paddle_jakarta/app/app.dialogs.dart';
 import 'package:paddle_jakarta/app/app.locator.dart';
 import 'package:paddle_jakarta/app/app.router.dart';
-import 'package:paddle_jakarta/domain/use_cases/auth/forgot_password.dart';
-import 'package:paddle_jakarta/domain/use_cases/auth/login_email.dart';
-import 'package:paddle_jakarta/domain/use_cases/auth/login_google.dart';
-import 'package:paddle_jakarta/domain/use_cases/auth/register_email.dart';
+import 'package:paddle_jakarta/domain/repository/user_repository.dart';
 import 'package:paddle_jakarta/services/theme_service.dart';
 import 'package:paddle_jakarta/utils/tools/log.dart';
 import 'package:stacked/stacked.dart';
@@ -18,17 +15,9 @@ part 'auth_viewmodel_state.dart';
 
 class AuthViewModel extends BaseViewModel {
 
-  final LoginEmail loginEmail;
-  final LoginGoogle loginGoogle;
-  final RegisterEmail registerEmail;
-  final ForgotPassword forgotPassword;
+  final UserRepository userRepository;
 
-  AuthViewModel(
-    this.loginEmail,
-    this.loginGoogle,
-    this.registerEmail,
-    this.forgotPassword
-  );
+  AuthViewModel(this.userRepository);
 
   final navigationService = locator<NavigationService>();
   final themeService = locator<ThemeService>();

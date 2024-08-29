@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:paddle_jakarta/utils/tools/log.dart';
 
 class DefaultFirebaseOptions {
   static Map<String, dynamic>? _jsonData;
@@ -40,6 +41,7 @@ class DefaultFirebaseOptions {
   }
 
   static FirebaseOptions _createFirebaseOptions(Map<String, dynamic> platformData) {
+    Log.yellow('FirebaseOptions databaseURL: ${platformData['databaseURL']}');
     return FirebaseOptions(
       apiKey: platformData['apiKey'],
       appId: platformData['appId'],

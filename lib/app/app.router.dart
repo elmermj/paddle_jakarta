@@ -9,7 +9,8 @@ import 'package:flutter/material.dart' as _i7;
 import 'package:flutter/material.dart';
 import 'package:paddle_jakarta/presentation/views/auth/views/auth_view.dart'
     as _i4;
-import 'package:paddle_jakarta/presentation/views/home/views/home_view.dart' as _i2;
+import 'package:paddle_jakarta/presentation/views/home/views/home_view.dart'
+    as _i2;
 import 'package:paddle_jakarta/presentation/views/match/match_view.dart' as _i6;
 import 'package:paddle_jakarta/presentation/views/profile/profile_view.dart'
     as _i5;

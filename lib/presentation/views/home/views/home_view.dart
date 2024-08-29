@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:paddle_jakarta/app/app.locator.dart';
+import 'package:paddle_jakarta/domain/repository/timeline_repository.dart';
+import 'package:paddle_jakarta/domain/repository/user_repository.dart';
 import 'package:paddle_jakarta/presentation/views/home/views/home_settings_view.dart';
 import 'package:paddle_jakarta/presentation/views/home/views/home_timeline_view.dart';
+import 'package:paddle_jakarta/presentation/widgets/nav_bar_item_widget.dart';
 import 'package:paddle_jakarta/utils/themes/sporty_elegant_minimal_theme.dart';
 import 'package:stacked/stacked.dart';
 
@@ -145,73 +149,20 @@ class HomeView extends StackedView<HomeViewModel> {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildNavBarItem(
-          index: 0,
-          icon: LucideIcons.home,
-          viewModel: viewModel,
-          context: context
-        ),
-        _buildNavBarItem(
-          index: 1,
-          icon: LucideIcons.award,
-          viewModel: viewModel,
-          context: context
-        ),
-        _buildNavBarItem(
-          index: 2,
-          icon: LucideIcons.plus,
-          viewModel: viewModel,
-          context: context
-        ),
-        _buildNavBarItem(
-          index: 3,
-          icon: LucideIcons.user,
-          viewModel: viewModel,
-          context: context
-        ),
-        _buildNavBarItem(
-          index: 4,
-          icon: LucideIcons.settings,
-          viewModel: viewModel,
-          context: context
-        ),
+        NavBarItemWidget(index: 0, icon: LucideIcons.home, viewModel: viewModel),
+        NavBarItemWidget(index: 1, icon: LucideIcons.award, viewModel: viewModel),
+        NavBarItemWidget(index: 2, icon: LucideIcons.plus, viewModel: viewModel),
+        NavBarItemWidget(index: 3, icon: LucideIcons.user, viewModel: viewModel),
+        NavBarItemWidget(index: 4, icon: LucideIcons.settings, viewModel: viewModel),
       ],
-    ),
-  );
-
-  Widget _buildNavBarItem({
-    required int index,
-    required IconData icon,
-    required HomeViewModel viewModel,
-    required BuildContext context
-  }) =>
-  Expanded(
-    child: Center(
-      child: IconButton(
-        onPressed: () => viewModel.switchHomeState(index: index),
-        style: TextButton.styleFrom(
-          backgroundColor: index == viewModel.indexState
-        ? Theme.of(context).colorScheme.surface.withOpacity(0.75)
-        : Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100),
-          )
-        ),
-        icon: Icon(
-          icon,
-          color: index == viewModel.indexState
-        ? Theme.of(context).colorScheme.primary
-        : Theme.of(context).colorScheme.onSurface,
-        )
-      ),
     ),
   );
 
   @override
   HomeViewModel viewModelBuilder(
     BuildContext context,
-  ) => HomeViewModel();
+  ) => HomeViewModel(locator<UserRepository>(), locator<TimelineRepository>());
+
+  @override
+  Future<void> onViewModelReady(HomeViewModel viewModel) async => await viewModel.init();
 }
-
-
-

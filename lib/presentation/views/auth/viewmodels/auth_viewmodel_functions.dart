@@ -11,7 +11,7 @@ extension Functions on AuthViewModel {
       return;
     }
 
-    final result = await loginEmail(email, password);
+    final result = await userRepository.loginEmail(email, password);
     result.fold(
       (failure) {
         isEmailCommitLoading = false;
@@ -43,7 +43,7 @@ extension Functions on AuthViewModel {
       notifyListeners();
       return;
     }
-    final result = await registerEmail(emailController.text, passwordController.text, nameController.text);
+    final result = await userRepository.registerEmail(emailController.text, passwordController.text, nameController.text);
     result.fold(
       (failure) {
         isEmailCommitLoading = false;
@@ -64,7 +64,7 @@ extension Functions on AuthViewModel {
   Future<void> onGoogleLogin() async {
     isGoogleLoginLoading = true;
     notifyListeners();
-    final result = await loginGoogle();
+    final result = await userRepository.loginGoogle();
     result.fold(
       (failure){
         isGoogleLoginLoading = false;
@@ -91,7 +91,7 @@ extension Functions on AuthViewModel {
       isLoading = false;
       return;
     }
-    final result = await forgotPassword(emailController.text);
+    final result = await userRepository.forgotPassword(emailController.text);
     result.fold(
       (failure){
         Log.red("Failed to send email: $failure");

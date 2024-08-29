@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paddle_jakarta/data/models/user_model.dart';
-import 'package:paddle_jakarta/data/sources/local_user_data_source.dart';
-import 'package:paddle_jakarta/data/sources/remote_user_data_source.dart';
+import 'package:paddle_jakarta/data/sources/user_data_sources.dart/local_user_data_source.dart';
+import 'package:paddle_jakarta/data/sources/user_data_sources.dart/remote_user_data_source.dart';
 
 abstract class UserRepository {
   Future<Either<String, Unit>> loginEmail(String email, String password);
@@ -26,8 +26,8 @@ class UserRepositoryImpl implements UserRepository {
       final userCredential = await remoteData.loginEmail(email, password);
       await toSaveUserData(userCredential);
       return right(unit);
-    } catch (e) {
-      return left('Login failed');
+    } on Exception catch (e) {
+      return left(e.toString());
     }
   }
 
@@ -37,7 +37,7 @@ class UserRepositoryImpl implements UserRepository {
       final userCredential = await remoteData.loginGoogle();
       await toSaveUserData(userCredential);
       return right(unit);
-    } catch (e) {
+    } on Exception catch (e) {
       return left(e.toString());
     }
   }
@@ -47,8 +47,8 @@ class UserRepositoryImpl implements UserRepository {
     try {
       await remoteData.registerEmail(email, password, name);
       return right(unit);
-    } catch (e) {
-      return left('Registration failed');
+    } on Exception catch (e) {
+      return left(e.toString());
     }
   }
   
@@ -63,7 +63,7 @@ class UserRepositoryImpl implements UserRepository {
     try {
       await remoteData.forgotPassword(email);
       return right(unit);
-    } catch (e) {
+    } on Exception catch (e) {
       return left(e.toString());
     }
   }
@@ -72,10 +72,10 @@ class UserRepositoryImpl implements UserRepository {
   Future<Either<String, Unit>> logout() async {
     try {
       await remoteData.logout();
-      // await localData.clearUserData();
+      await localData.clearUserData();
       return right(unit);
-    } catch (e) {
-      return left('Logout failed');
+    } on Exception catch (e) {
+      return left(e.toString());
     }
   }
 
@@ -93,6 +93,5 @@ extension on UserRepositoryImpl {
         creationTime: Timestamp.fromDate(userCredential.user?.metadata.creationTime ?? DateTime.now()),
       )
     );
-
   }
 }

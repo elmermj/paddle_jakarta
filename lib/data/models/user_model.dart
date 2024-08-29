@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:paddle_jakarta/data/models/statistics_model.dart';
 
 part 'user_model.g.dart';
 
@@ -13,6 +14,10 @@ class UserModel extends HiveObject {
   final String? photoUrl;
   @HiveField(3)
   final Timestamp? creationTime;
+  @HiveField(4)
+  final Timestamp? lastLogin;
+  @HiveField(5)
+  final StatisticsModel? statistics;
 
   //toJson and fromJson are required for Hive
 
@@ -20,7 +25,9 @@ class UserModel extends HiveObject {
     this.displayName,
     this.email,
     this.photoUrl,
-    this.creationTime,
+    this.creationTime, 
+    this.lastLogin,
+    this.statistics,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
@@ -28,6 +35,8 @@ class UserModel extends HiveObject {
         email: json['email'] ?? 'N/A',
         photoUrl: json['photoUrl'],
         creationTime: json['creationTime'] ?? 'N/A',
+        lastLogin: json['lastLogin'] ?? 'N/A',
+        statistics: json['statistics'] ?? 'N/A',
       );
 
   Map<String, dynamic> toJson() => {
@@ -35,5 +44,7 @@ class UserModel extends HiveObject {
         'email': email ?? 'N/A',
         'photoUrl': photoUrl,
         'creationTime': creationTime ?? 'N/A',
+        'lastLogin': lastLogin ?? 'N/A',
+        'statistics': statistics ?? 'N/A',
   };
 }

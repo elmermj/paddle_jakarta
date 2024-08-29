@@ -1,13 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:paddle_jakarta/data/helpers/web_client_id_helper.dart';
+import 'package:paddle_jakarta/data/models/user_model.dart';
 import 'package:paddle_jakarta/utils/tools/log.dart';
 
 class RemoteUserDataSource {
   final FirebaseAuth _firebaseAuth;
+  final FirebaseFirestore _firebaseFirestore;
 
-  RemoteUserDataSource(this._firebaseAuth);
+  RemoteUserDataSource(this._firebaseAuth, this._firebaseFirestore);
 
   Future<UserCredential> loginEmail(String email, String password) async {
     try {
@@ -45,6 +48,15 @@ class RemoteUserDataSource {
         idToken: googleAuth.idToken,
       );
       final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+      await saveUserData(
+        UserModel(
+          displayName: userCredential.user?.displayName,
+          email: userCredential.user?.email,
+          photoUrl: userCredential.user?.photoURL,
+          creationTime: Timestamp.fromDate(userCredential.user?.metadata.creationTime ?? DateTime.now()),
+          lastLogin: Timestamp.fromDate(DateTime.now()),
+        )
+      );
       Log.yellow('Google sign-in successful');
       Log.green('${userCredential.user}');
 
@@ -75,5 +87,16 @@ class RemoteUserDataSource {
 
   Future<void> logout() async {
     await _firebaseAuth.signOut();
+  }
+
+  Future<void> saveUserData(UserModel user) async {
+    Log.yellow('Database URL: ${_firebaseFirestore.databaseURL}');
+    await _firebaseFirestore.collection('users').doc(user.email).get().then((value) {
+      if(value.exists){
+        _firebaseFirestore.collection('users').doc(user.email).update(user.toJson());
+      }else{
+        _firebaseFirestore.collection('users').doc(user.email).set(user.toJson());
+      }
+    });
   }
 }

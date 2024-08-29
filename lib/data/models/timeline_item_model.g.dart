@@ -1,47 +1,41 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_model.dart';
+part of 'timeline_item_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UserModelAdapter extends TypeAdapter<UserModel> {
+class TimelineItemModelAdapter extends TypeAdapter<TimelineItemModel> {
   @override
-  final int typeId = 0;
+  final int typeId = 4;
 
   @override
-  UserModel read(BinaryReader reader) {
+  TimelineItemModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return UserModel(
-      displayName: fields[0] as String?,
-      email: fields[1] as String?,
-      photoUrl: fields[2] as String?,
-      creationTime: fields[3] as Timestamp?,
-      lastLogin: fields[4] as Timestamp?,
-      statistics: fields[5] as StatisticsModel?,
+    return TimelineItemModel(
+      timelineItemId: fields[0] as String?,
+      title: fields[1] as String?,
+      type: fields[2] as String?,
+      timestamp: fields[3] as Timestamp?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, UserModel obj) {
+  void write(BinaryWriter writer, TimelineItemModel obj) {
     writer
-      ..writeByte(6)
-      ..writeByte(0)
-      ..write(obj.displayName)
-      ..writeByte(1)
-      ..write(obj.email)
-      ..writeByte(2)
-      ..write(obj.photoUrl)
-      ..writeByte(3)
-      ..write(obj.creationTime)
       ..writeByte(4)
-      ..write(obj.lastLogin)
-      ..writeByte(5)
-      ..write(obj.statistics);
+      ..writeByte(0)
+      ..write(obj.timelineItemId)
+      ..writeByte(1)
+      ..write(obj.title)
+      ..writeByte(2)
+      ..write(obj.type)
+      ..writeByte(3)
+      ..write(obj.timestamp);
   }
 
   @override
@@ -50,7 +44,7 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserModelAdapter &&
+      other is TimelineItemModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

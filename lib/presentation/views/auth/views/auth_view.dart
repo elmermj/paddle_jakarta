@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:paddle_jakarta/app/app.locator.dart';
-import 'package:paddle_jakarta/domain/use_cases/auth/forgot_password.dart';
-import 'package:paddle_jakarta/domain/use_cases/auth/login_email.dart';
-import 'package:paddle_jakarta/domain/use_cases/auth/login_google.dart';
-import 'package:paddle_jakarta/domain/use_cases/auth/register_email.dart';
+import 'package:paddle_jakarta/domain/repository/user_repository.dart';
 import 'package:paddle_jakarta/presentation/common/ui_helpers.dart';
 import 'package:paddle_jakarta/presentation/widgets/auth_form.dart';
 import 'package:paddle_jakarta/utils/themes/sporty_elegant_minimal_theme.dart';
@@ -251,10 +248,7 @@ class AuthView extends StackedView<AuthViewModel> {
     BuildContext context,
   ) {
     return AuthViewModel(
-      locator<LoginEmail>(),
-      locator<LoginGoogle>(),
-      locator<RegisterEmail>(),
-      locator<ForgotPassword>()
+      locator<UserRepository>(),
     );
   }
 }

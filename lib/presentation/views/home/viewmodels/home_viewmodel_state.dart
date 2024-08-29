@@ -34,4 +34,9 @@ extension State on HomeViewModel {
     notifyListeners();
   }
 
+  void toggleEditProfile(){
+    isEditingProfile = !isEditingProfile;
+    notifyListeners();
+  }
+
 }

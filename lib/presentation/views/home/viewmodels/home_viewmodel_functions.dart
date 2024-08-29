@@ -27,7 +27,7 @@ extension Functions on HomeViewModel {
   Future<void> logout() async {
     setBusy(true);
 
-    final result = await _logout();
+    final result = await _userRepository.logout();
 
     result.fold(
       (failure) {
@@ -40,6 +40,44 @@ extension Functions on HomeViewModel {
       (_) {
         setBusy(false);
         _navigationService.clearStackAndShow(Routes.authView);
+      },
+    );
+  }
+
+  Future<void> getMyTimeline() async {
+
+    final result = await _timelineRepository.getMyTimelineItems(limitLoad);
+
+    result.fold(
+      (failure) {
+        _dialogService.showCustomDialog(
+          variant: DialogType.infoAlert,
+          title: failure.toString(),
+        );
+      },
+      (timelineItemsResponse) {
+        for(var timelineItem in timelineItemsResponse) {
+          Log.green('timelineItem: ${timelineItem.toJson()}');
+        }
+        timelineItems = timelineItemsResponse;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> loadMoreTimelineItems(String timelineItemId) async {
+    final result = await _timelineRepository.loadMoreTimelineItems(limitLoad, timelineItemId);
+    result.fold(
+      (failure) {
+        _dialogService.showCustomDialog(
+          variant: DialogType.infoAlert,
+          title: failure.toString(),
+        );
+      },
+      (timelineItemsResponse) {
+        Log.green('timelineItemsResponse: $timelineItemsResponse');
+        timelineItems.addAll(timelineItemsResponse);
+        notifyListeners();
       },
     );
   }
