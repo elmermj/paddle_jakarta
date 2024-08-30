@@ -3,6 +3,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:paddle_jakarta/app/app.locator.dart';
 import 'package:paddle_jakarta/domain/repository/timeline_repository.dart';
 import 'package:paddle_jakarta/domain/repository/user_repository.dart';
+import 'package:paddle_jakarta/presentation/views/home/views/home_create_match_screen.dart';
 import 'package:paddle_jakarta/presentation/views/home/views/home_settings_view.dart';
 import 'package:paddle_jakarta/presentation/views/home/views/home_timeline_view.dart';
 import 'package:paddle_jakarta/presentation/widgets/nav_bar_item_widget.dart';
@@ -74,34 +75,7 @@ class HomeView extends StackedView<HomeViewModel> {
                 ],
               );
             case 2:
-              return Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height/5 < 240 ? MediaQuery.of(context).size.height/5 : 240,
-                      ),
-                      margin: const EdgeInsets.all(8),
-                      child: Stack(
-                        children: [
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Container(
-                              padding: const EdgeInsets.only(left: 8, top: 8),
-                              child: const Text('Your last match against player'),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              );
+              return HomeCreateMatchScreen(viewModel: viewModel);
             case 3:
               return Stack(
                 children: [
