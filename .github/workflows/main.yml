@@ -42,4 +42,14 @@ jobs:
       run: dart pub get
 
     - name: Build APK
-      run: flutter build apk
+      run: flutter build apk --release
+
+    - name: Upload development APK to Google Drive
+      uses: adityak74/google-drive-upload-git-action@main
+      with:
+        credentials: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_BASE64 }}
+        filename: "build/app/outputs/flutter-apk/app-release.apk"
+        folderId: ${{ secrets.FOLDER_ID }}
+        name: "app-development-release.apk"
+        overwrite: "true"
+
