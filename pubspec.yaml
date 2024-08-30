@@ -24,6 +24,12 @@ dependencies:
   flutter_any_logo: 
   flutter_svg:
 
+dependency_overrides:
+  flutter_any_logo:
+    git:
+      url: https://github.com/elmermj/flutter_any_logo.git
+      ref: main
+
 dev_dependencies:
   build_runner: ^2.4.5
   flutter_test:
