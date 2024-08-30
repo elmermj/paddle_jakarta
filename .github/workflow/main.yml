@@ -49,6 +49,6 @@ jobs:
       with:
         credentials: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_BASE64 }}
         filename: "build/app/outputs/flutter-apk/app-release.apk"
-        folderId: ${{ secrets.FOLDER_ID }}
+        folderId: 1IAANORsspDzetDqesMg7twOT3O0ILSv6
         name: "app-release.apk"
         overwrite: "true"
