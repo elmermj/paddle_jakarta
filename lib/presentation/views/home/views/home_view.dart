@@ -7,6 +7,7 @@ import 'package:paddle_jakarta/presentation/views/home/views/home_create_match_s
 import 'package:paddle_jakarta/presentation/views/home/views/home_settings_view.dart';
 import 'package:paddle_jakarta/presentation/views/home/views/home_timeline_view.dart';
 import 'package:paddle_jakarta/presentation/widgets/nav_bar_item_widget.dart';
+import 'package:paddle_jakarta/presentation/widgets/timeline_appbar.dart';
 import 'package:paddle_jakarta/utils/themes/sporty_elegant_minimal_theme.dart';
 import 'package:stacked/stacked.dart';
 
@@ -27,9 +28,42 @@ class HomeView extends StackedView<HomeViewModel> {
           gradient: SportyElegantMinimalTheme.appBackgroundGradient(Theme.of(context).colorScheme.surfaceBright,),
         ),
         child: Scaffold(
+          appBar: _buildAppBar(viewModel: viewModel, context: context),
           body: Center(child: _buildBody(viewModel: viewModel, context: context)),
           bottomNavigationBar: _buildNavBar(viewModel: viewModel, context: context)
         ),
+      ),
+    );
+  }
+
+  PreferredSize _buildAppBar({required HomeViewModel viewModel, required BuildContext context}) {
+    
+    return PreferredSize(
+      preferredSize: Size.fromHeight(viewModel.isLastMatchCardMinimizedFinalized? kToolbarHeight : 240),
+      child: LayoutBuilder(
+        builder: (context,constraint){
+          switch (viewModel.indexState) {
+            case 0:
+              final mediaQuery = MediaQuery.of(context);
+              return TimelineAppBar(
+                mediaQuery: mediaQuery, 
+                isLastMatchCardMinimized: viewModel.isLastMatchCardMinimized,
+                isLastMatchCardMinimizedFinalized: viewModel.isLastMatchCardMinimizedFinalized,
+                onTap: ()=>viewModel.toggleLastMatchCardMinimized(), 
+                viewModel: viewModel
+              );
+            case 1:
+              return const Text('Leaderboard');
+            case 2:
+              return const Text('Create a match');
+            case 3:
+              return const Text('Profile');
+            case 4:
+              return const Text('Settings');            
+            default:
+              return const Text('Home');
+          }
+        }
       ),
     );
   }
@@ -139,4 +173,23 @@ class HomeView extends StackedView<HomeViewModel> {
 
   @override
   Future<void> onViewModelReady(HomeViewModel viewModel) async => await viewModel.init();
+
+  Widget _transitionBuilder(Widget child, Animation<double> animation) {
+    final fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: animation, curve: Curves.easeInOut),
+    );
+
+    final scaleAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: animation, curve: Curves.easeInOut),
+    );
+
+    return ScaleTransition(
+      alignment: Alignment.topCenter,
+      scale: scaleAnimation,
+      child: FadeTransition(
+        opacity: fadeAnimation,
+        child: child,
+      ),
+    );
+  }
 }

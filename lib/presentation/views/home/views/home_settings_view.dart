@@ -133,6 +133,54 @@ class HomeSettingsView extends StatelessWidget {
                       transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
                       child: Row(
                         children: [
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(viewModel.isLocationPermissionGranted? 'Location On ': 'Location Off '))
+                          ),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                onPressed: () async => await viewModel.checkLocationPermission(isTurnOff: viewModel.isLocationPermissionGranted),
+                                icon: Icon(
+                                  key: ValueKey<bool>(viewModel.isLocationPermissionGranted),
+                                  viewModel.isLocationPermissionGranted
+                                ? LucideIcons.locate
+                                : LucideIcons.locateOff,
+                                  size: 32,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                verticalSpaceSmall,
+                Container(
+                  height: Theme.of(context).elevatedButtonTheme.style?.minimumSize?.resolve({})?.height ?? 48,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).colorScheme.surfaceBright.withOpacity(0.1),
+                        blurRadius: 1.0,
+                      ),
+                    ],
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: AnimatedSwitcher(
+                      duration: Durations.medium2,
+                      reverseDuration: Durations.medium2,
+                      transitionBuilder: (Widget child, Animation<double> animation) => ScaleTransition(scale: animation, child: child),
+                      child: Row(
+                        children: [
                           const Expanded(
                             child: Align(
                               alignment: Alignment.centerLeft,

@@ -13,29 +13,58 @@ extension State on HomeViewModel {
   }
 
   switchHomeState({required int index}){
+    if(positionStreamSubscription != null && index != 2){
+      Log.yellow('Cancelling position stream subscription');
+      positionStreamSubscription?.cancel();
+    }
     indexState = index;
     notifyListeners();
   }
 
-  // void toggleLastMatchCardMinimized() {
-  //   isAnimating = true; // Set to true to indicate animation is in progress
-  //   notifyListeners();
-    
-  //   // Perform the transition animation, then set _isAnimating to false
-  //   Future.delayed(Durations.short3, () {
-  //     isLastMatchCardMinimized = !isLastMatchCardMinimized;
-  //     isAnimating = false; // Set to false once animation is complete
-  //     notifyListeners();
-  //   });
-  // }
-
   void toggleLastMatchCardMinimized() {
-    isLastMatchCardMinimized = !isLastMatchCardMinimized;
-    notifyListeners();
+    if(isLastMatchCardMinimized){
+      isLastMatchCardMinimizedFinalized = !isLastMatchCardMinimizedFinalized;
+      notifyListeners();
+      Future.delayed(Durations.short1, () {
+        isLastMatchCardMinimized = !isLastMatchCardMinimized;
+        notifyListeners();
+      });
+    } else {
+      isLastMatchCardMinimized = !isLastMatchCardMinimized;
+      notifyListeners();
+      Future.delayed(Durations.short3, () {
+        isLastMatchCardMinimizedFinalized = !isLastMatchCardMinimizedFinalized;
+        notifyListeners();
+      });
+    }
   }
 
   void toggleEditProfile(){
     isEditingProfile = !isEditingProfile;
+    notifyListeners();
+  }
+
+  void _startListeningToLocationChanges() {
+    positionStreamSubscription =
+        _geolocator.getPositionStream(locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 5,
+        )).listen((Position position) {
+          currentPosition = LatLng(position.latitude, position.longitude);
+          Log.yellow('Current position: $currentPosition');
+          notifyListeners(); 
+        });
+  }
+
+  void updateCameraPosition(GoogleMapController controller){
+    controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: currentPosition!,
+          zoom: 16,
+        ),
+      ),
+    );
     notifyListeners();
   }
 

@@ -24,6 +24,8 @@ dependencies:
   flutter_any_logo: 
   flutter_svg:
   google_maps_flutter:
+  permission_handler:
+  geolocator:
 
 dependency_overrides:
   flutter_any_logo:

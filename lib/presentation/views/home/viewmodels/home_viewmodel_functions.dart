@@ -45,7 +45,8 @@ extension Functions on HomeViewModel {
   }
 
   Future<void> getMyTimeline() async {
-
+    isTimelineLoading = true;
+    notifyListeners();
     final result = await _timelineRepository.getMyTimelineItems(limitLoad);
 
     result.fold(
@@ -63,9 +64,14 @@ extension Functions on HomeViewModel {
         notifyListeners();
       },
     );
+    isTimelineLoading = false;
+    notifyListeners();
   }
 
   Future<void> loadMoreTimelineItems(String timelineItemId) async {
+    isTimelineLoading = true;
+    notifyListeners();
+    Log.yellow("Calling loadMoreTimelineItems");
     final result = await _timelineRepository.loadMoreTimelineItems(limitLoad, timelineItemId);
     result.fold(
       (failure) {
@@ -80,5 +86,21 @@ extension Functions on HomeViewModel {
         notifyListeners();
       },
     );
+    isTimelineLoading = true;
+    notifyListeners();
+  }
+
+  Future<void> checkLocationPermission({bool? isTurnOff}) async {
+    PermissionStatus status = await Permission.location.status;
+
+    if (status.isDenied) {
+      status = await Permission.location.request();
+    }
+
+    if(isTurnOff == true && isTurnOff !=null) {
+      status = PermissionStatus.denied;
+    }
+    isLocationPermissionGranted = status.isGranted;
+    notifyListeners();
   }
 }
