@@ -36,36 +36,29 @@ class HomeView extends StackedView<HomeViewModel> {
     );
   }
 
-  PreferredSize _buildAppBar({required HomeViewModel viewModel, required BuildContext context}) {
+  AppBar _buildAppBar({required HomeViewModel viewModel, required BuildContext context}) {
     
-    return PreferredSize(
-      preferredSize: Size.fromHeight(viewModel.isLastMatchCardMinimizedFinalized? kToolbarHeight : 240),
-      child: LayoutBuilder(
-        builder: (context,constraint){
-          switch (viewModel.indexState) {
-            case 0:
-              final mediaQuery = MediaQuery.of(context);
-              return TimelineAppBar(
-                mediaQuery: mediaQuery, 
-                isLastMatchCardMinimized: viewModel.isLastMatchCardMinimized,
-                isLastMatchCardMinimizedFinalized: viewModel.isLastMatchCardMinimizedFinalized,
-                onTap: ()=>viewModel.toggleLastMatchCardMinimized(), 
-                viewModel: viewModel
-              );
-            case 1:
-              return const Text('Leaderboard');
-            case 2:
-              return const Text('Create a match');
-            case 3:
-              return const Text('Profile');
-            case 4:
-              return const Text('Settings');            
-            default:
-              return const Text('Home');
-          }
-        }
-      ),
-    );
+      switch (viewModel.indexState) {
+        case 0:
+          final mediaQuery = MediaQuery.of(context);
+          return TimelineAppBar(
+            mediaQuery: mediaQuery, 
+            isLastMatchCardMinimized: viewModel.isLastMatchCardMinimized,
+            isLastMatchCardMinimizedFinalized: viewModel.isLastMatchCardMinimizedFinalized,
+            onTap: ()=>viewModel.toggleLastMatchCardMinimized(), 
+            viewModel: viewModel
+          );
+        case 1:
+          return AppBar(title: const Text('Leaderboard'));
+        case 2:
+          return AppBar(title: const Text('Create a match'));
+        case 3:
+          return AppBar(title: const Text('Profile'));
+        case 4:
+          return AppBar(title: const Text('Settings'));
+        default:
+          return AppBar(title: const Text('Home'));
+    }
   }
 
   Widget _buildBody({required HomeViewModel viewModel, required BuildContext context}) {
@@ -74,77 +67,90 @@ class HomeView extends StackedView<HomeViewModel> {
         maxWidth: MediaQuery.of(context).size.width < 480 ? MediaQuery.of(context).size.width : 480,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Builder(
-        builder: (context) {
-          switch(viewModel.indexState) {
-            case 0:
-              return HomeTimelineView(viewModel: viewModel,);
-            case 1:
-              return Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(16),
+      child: AnimatedSwitcher(
+        duration: Durations.short3,
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return ScaleTransition(
+            scale: animation,
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        child: Builder(
+          key: ValueKey<int>(viewModel.indexState),
+          builder: (context) {
+            switch(viewModel.indexState) {
+              case 0:
+                return HomeTimelineView(viewModel: viewModel,);
+              case 1:
+                return Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height/5 < 240 ? MediaQuery.of(context).size.height/5 : 240,
+                        ),
+                        margin: const EdgeInsets.all(8),
+                        child: Stack(
+                          children: [
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Container(
+                                padding: const EdgeInsets.only(left: 8, top: 8),
+                                child: const Text('Your last match against player'),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height/5 < 240 ? MediaQuery.of(context).size.height/5 : 240,
+                    )
+                  ],
+                );
+              case 2:
+                return HomeCreateMatchScreen(viewModel: viewModel);
+              case 3:
+                return Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height/5 < 240 ? MediaQuery.of(context).size.height/5 : 240,
+                        ),
+                        margin: const EdgeInsets.all(8),
+                        child: Stack(
+                          children: [
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Container(
+                                padding: const EdgeInsets.only(left: 8, top: 8),
+                                child: const Text('Your last match against player'),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                      margin: const EdgeInsets.all(8),
-                      child: Stack(
-                        children: [
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Container(
-                              padding: const EdgeInsets.only(left: 8, top: 8),
-                              child: const Text('Your last match against player'),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              );
-            case 2:
-              return HomeCreateMatchScreen(viewModel: viewModel);
-            case 3:
-              return Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height/5 < 240 ? MediaQuery.of(context).size.height/5 : 240,
-                      ),
-                      margin: const EdgeInsets.all(8),
-                      child: Stack(
-                        children: [
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Container(
-                              padding: const EdgeInsets.only(left: 8, top: 8),
-                              child: const Text('Your last match against player'),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              );
-            case 4:
-              return HomeSettingsView(viewModel: viewModel,);
-            default:
-              return const SizedBox();
+                    )
+                  ],
+                );
+              case 4:
+                return HomeSettingsView(viewModel: viewModel,);
+              default:
+                return const SizedBox();
+            }
           }
-        }
+        ),
       ),
     );
   }

@@ -47,10 +47,12 @@ class HomeViewModel extends BaseViewModel {
   bool isEditingProfile = false;
   bool isTimelineLoading = false;
   double progress = 1.0;
+  double appBarHeight = 0.0;
 
   StreamSubscription<Position>? positionStreamSubscription;
   LatLng? currentPosition;
   ScrollController timelineScrollController = ScrollController();
+  final timelineAppBarKey = GlobalKey();
 
   Set<TimelineItemModel> timelineItems = {};
 
