@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -13,6 +12,7 @@ import 'package:paddle_jakarta/domain/repository/timeline_repository.dart';
 import 'package:paddle_jakarta/domain/repository/user_repository.dart';
 import 'package:paddle_jakarta/presentation/common/app_strings.dart';
 import 'package:paddle_jakarta/services/theme_service.dart';
+import 'package:paddle_jakarta/utils/dummy/dummy_timeline_items.dart';
 import 'package:paddle_jakarta/utils/tools/log.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:stacked/stacked.dart';
@@ -42,6 +42,7 @@ class HomeViewModel extends BaseViewModel {
   bool isDeletingCache = false;
   bool isLastMatchCardMinimized = false;
   bool isLastMatchCardMinimizedFinalized = false;
+  bool timelineBodySwitch = false;
   bool isAnimating = false;
   bool isNotificationUnseen = false;
   bool isEditingProfile = false;
@@ -86,151 +87,40 @@ class HomeViewModel extends BaseViewModel {
   }
 
   void _initializeScrollListener() {
-    timelineScrollController.jumpTo(timelineScrollController.position.maxScrollExtent);
-    timelineScrollController.addListener(() {
-      Log.yellow("Current scroll position: ${timelineScrollController.position.pixels}");
-      Log.yellow("Max scroll extent: ${timelineScrollController.position.maxScrollExtent}");
+    WidgetsFlutterBinding.ensureInitialized();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (timelineScrollController.hasClients) {
+        // Ensure we only set up the listener if the controller has clients
+        timelineScrollController.jumpTo(timelineScrollController.position.maxScrollExtent);
 
-      if (timelineScrollController.position.pixels >=
-          timelineScrollController.position.maxScrollExtent * 1.25) {
-        if (!isTimelineLoading && timelineItems.isNotEmpty) {
-          isTimelineLoading = true;
-          loadMoreTimelineItems(timelineItems.last.timelineItemId!);
-        }
+        timelineScrollController.addListener(() {
+          // Ensure the controller is not null and has clients
+          if (!timelineScrollController.hasClients) return;
+
+          final position = timelineScrollController.position;
+          Log.yellow("Current scroll position: ${position.pixels}");
+          Log.yellow("Max scroll extent: ${position.maxScrollExtent}");
+
+          // Check if we're at the top and trigger load more if conditions are met
+          if (position.pixels <= position.minScrollExtent + 1 && !isTimelineLoading && timelineItems.isNotEmpty) {
+            loadMoreTimelineItems("0");
+          }
+        });
       }
     });
   }
 
   @override
   void dispose() {
-    timelineScrollController.dispose(); // Dispose the scroll controller
+    timelineScrollController.dispose();
     positionStreamSubscription?.cancel();
     Log.red('HomeViewModel disposed');
     super.dispose();
   }
 
-  final List<TimelineItemModel> dummyTimelineItems = [
-  TimelineItemModel(
-    timelineItemId: '1',
-    title: 'Event 1',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '2',
-    title: 'Event 2',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '3',
-    title: 'Event 3',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '4',
-    title: 'Event 4',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '5',
-    title: 'Event 5',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '6',
-    title: 'Event 6',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '7',
-    title: 'Event 7',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '8',
-    title: 'Event 8',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '9',
-    title: 'Event 9',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '10',
-    title: 'Event 10',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '11',
-    title: 'Event 11',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '12',
-    title: 'Event 12',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '13',
-    title: 'Event 13',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '14',
-    title: 'Event 14',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '15',
-    title: 'Event 15',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '16',
-    title: 'Event 16',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '17',
-    title: 'Event 17',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '18',
-    title: 'Event 18',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '19',
-    title: 'Event 19',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-  TimelineItemModel(
-    timelineItemId: '20',
-    title: 'Event 20',
-    type: 'event',
-    timestamp: Timestamp.now(),
-  ),
-];
+
+  //dummy data
+  final List<TimelineItemModel> dummyTimelineItems = dummyTimelineItemsFile;
 
 }
 

@@ -25,133 +25,115 @@ class HomeTimelineView extends StatelessWidget {
       },
       child: Builder(
         key: ValueKey<bool>(viewModel.isLastMatchCardMinimized),
-        builder: (context) {
-          return viewModel.isLastMatchCardMinimized ? _buildChild(context) : _buildChild(context);
-        }
+        builder: (context) => viewModel.timelineBodySwitch ? const SizedBox.shrink() : _buildChild(context)
       )
     );
   }
 
-  Widget _buildChild(BuildContext context){
-    return ListView(
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
-          Row(
+  Widget _buildChild(BuildContext context) {
+    return CustomScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      slivers: [
+        SliverToBoxAdapter(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IntrinsicHeight(
                 child: Text(
                   'Timeline',
                   style: Theme.of(context).textTheme.titleLarge,
-                )
+                ),
               ),
               IntrinsicHeight(
                 child: IconButton(
-                  onPressed: (){}, 
+                  onPressed: () {},
                   icon: Stack(
                     alignment: Alignment.center,
                     children: [
-                      const Icon(
-                        LucideIcons.bell,
-                      ),
-                      viewModel.isNotificationUnseen? const Positioned(
-                        top: 0,
-                        right: 0,
-                        child: CircleAvatar(
-                          radius: 4,
-                          backgroundColor: Colors.red,
-                        ),
-                      ): const SizedBox.shrink()
+                      const Icon(LucideIcons.bell),
+                      viewModel.isNotificationUnseen
+                          ? const Positioned(
+                              top: 0,
+                              right: 0,
+                              child: CircleAvatar(
+                                radius: 4,
+                                backgroundColor: Colors.red,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
                     ],
-                  )
+                  ),
                 ),
               ),
             ],
           ),
-          verticalSpaceMedium,
-          ListView.builder(
-            shrinkWrap: true,
-            reverse: true,
-            physics: const ClampingScrollPhysics(),
-            itemCount: viewModel.timelineItems.length,
-            controller: viewModel.timelineScrollController,
-            itemBuilder: (context, index) {
-              return Container(
-                constraints: const BoxConstraints(
-                  maxHeight: 100,
-                  minHeight: 25
-                ),
-                child: TimelineItemWidget(
-                  timelineItem: viewModel.timelineItems.toList()[index],
-                  isLast: viewModel.timelineItems.last == viewModel.timelineItems.toList()[index],
-                  isFirst: viewModel.timelineItems.first == viewModel.timelineItems.toList()[index],
-                ),
-              );
-            }
-          ),
-        ]
-      );
-  }
-
-  List<Widget> _buildTimelineBody(BuildContext context){
-    return [
-      verticalSpaceMedium,
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IntrinsicHeight(
-            child: Text(
-              'Timeline',
-              style: Theme.of(context).textTheme.titleLarge,
-            )
-          ),
-          IntrinsicHeight(
-            child: IconButton(
-              onPressed: (){}, 
-              icon: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Icon(
-                    LucideIcons.bell,
+        ),
+        const SliverToBoxAdapter(child: verticalSpaceMedium,),
+        SliverFillRemaining(
+          hasScrollBody: true,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: AnimatedSwitcher(
+              duration: Durations.short3,
+              reverseDuration: Durations.short3,
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return ScaleTransition(
+                  scale: animation,
+                  child: FadeTransition(
+                    opacity: animation,
+                    child: child,
                   ),
-                  viewModel.isNotificationUnseen? const Positioned(
-                    top: 0,
-                    right: 0,
-                    child: CircleAvatar(
-                      radius: 4,
-                      backgroundColor: Colors.red,
+                );
+              },
+              child: Builder(
+                key: ValueKey<bool>(viewModel.isTimelineLoading),
+                builder: (context) {
+                  return viewModel.isTimelineLoading
+                ? const SizedBox(
+                    height: 100,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        verticalSpaceMedium,
+                        Text(
+                          'Loading timeline...',
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
                     ),
-                  ): const SizedBox.shrink()
-                ],
-              )
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    reverse: true,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: viewModel.dummyTimelineItems.length,
+                    controller: viewModel.timelineScrollController ?? ScrollController(),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        constraints: const BoxConstraints(
+                          maxHeight: 100,
+                          minHeight: 25,
+                        ),
+                        child: TimelineItemWidget(
+                          timelineItem: viewModel.dummyTimelineItems.toList()[index],
+                          isLast: viewModel.dummyTimelineItems.last == viewModel.dummyTimelineItems.toList()[index],
+                          isFirst: viewModel.dummyTimelineItems.first == viewModel.dummyTimelineItems.toList()[index],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
-        ],
-      ),
-      verticalSpaceMedium,
-      ListView.builder(
-        shrinkWrap: true,
-        physics: const ClampingScrollPhysics(),
-        reverse: true,
-        itemCount: viewModel.timelineItems.length,
-        controller: viewModel.timelineScrollController,
-        itemBuilder: (context, index) {
-          return Container(
-            constraints: const BoxConstraints(
-              maxHeight: 100,
-              minHeight: 25
-            ),
-            child: TimelineItemWidget(
-              timelineItem: viewModel.timelineItems.toList()[index],
-              isLast: viewModel.timelineItems.last == viewModel.timelineItems.toList()[index],
-              isFirst: viewModel.timelineItems.first == viewModel.timelineItems.toList()[index],
-            ),
-          );
-        }
-      ),
-    ];
+        ),
+      ],
+    );
   }
-
   
 }

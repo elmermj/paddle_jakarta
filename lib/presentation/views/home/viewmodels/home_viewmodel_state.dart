@@ -22,6 +22,8 @@ extension State on HomeViewModel {
   }
 
   void toggleLastMatchCardMinimized() {
+    timelineBodySwitch = true;
+    notifyListeners();
     if(isLastMatchCardMinimized){
       isLastMatchCardMinimizedFinalized = !isLastMatchCardMinimizedFinalized;
       notifyListeners();
@@ -37,6 +39,8 @@ extension State on HomeViewModel {
         notifyListeners();
       });
     }
+    timelineBodySwitch = false;
+    notifyListeners();
   }
 
   void toggleEditProfile(){

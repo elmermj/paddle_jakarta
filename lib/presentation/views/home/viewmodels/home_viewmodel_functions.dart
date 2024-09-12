@@ -47,6 +47,9 @@ extension Functions on HomeViewModel {
   Future<void> getMyTimeline() async {
     isTimelineLoading = true;
     notifyListeners();
+    Future.delayed(
+      const Duration(milliseconds: 3000),
+    );
     final result = await _timelineRepository.getMyTimelineItems(limitLoad);
 
     result.fold(
@@ -68,26 +71,33 @@ extension Functions on HomeViewModel {
     notifyListeners();
   }
 
-  Future<void> loadMoreTimelineItems(String timelineItemId) async {
-    isTimelineLoading = true;
-    notifyListeners();
-    Log.yellow("Calling loadMoreTimelineItems");
-    final result = await _timelineRepository.loadMoreTimelineItems(limitLoad, timelineItemId);
-    result.fold(
-      (failure) {
-        _dialogService.showCustomDialog(
-          variant: DialogType.infoAlert,
-          title: failure.toString(),
-        );
-      },
-      (timelineItemsResponse) {
-        Log.green('timelineItemsResponse: $timelineItemsResponse');
-        timelineItems.addAll(timelineItemsResponse);
-        notifyListeners();
-      },
-    );
-    isTimelineLoading = true;
-    notifyListeners();
+  Future<void> loadMoreTimelineItems(String? timelineItemId) async {
+    try {
+      isTimelineLoading = true;
+      notifyListeners();
+      Log.yellow("Calling loadMoreTimelineItems");
+      final result = await _timelineRepository.loadMoreTimelineItems(limitLoad, timelineItemId!);
+      result.fold(
+        (failure) {
+          _dialogService.showCustomDialog(
+            variant: DialogType.infoAlert,
+            title: failure.toString(),
+          );
+        },
+        (timelineItemsResponse) {
+          Log.green('timelineItemsResponse: $timelineItemsResponse');
+          timelineItems.addAll(timelineItemsResponse);
+          notifyListeners();
+        },
+      );
+      isTimelineLoading = true;
+      notifyListeners();
+    } on Exception catch (e) {
+      _dialogService.showCustomDialog(
+        variant: DialogType.infoAlert,
+        title: e.toString(),
+      );
+    }
   }
 
   Future<void> checkLocationPermission({bool? isTurnOff}) async {
