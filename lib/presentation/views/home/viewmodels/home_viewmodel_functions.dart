@@ -14,6 +14,7 @@ extension Functions on HomeViewModel {
       elapsed += stepInterval.inMilliseconds;
 
       double progressValue = 1 - (elapsed / totalDuration.inMilliseconds);
+      progressValue = progressValue.clamp(0.0, 1.0);
       updateProgress(progressValue);
 
       if (elapsed >= totalDuration.inMilliseconds) {
@@ -72,8 +73,8 @@ extension Functions on HomeViewModel {
   }
 
   Future<void> loadMoreTimelineItems(String? timelineItemId) async {
+    isTimelineLoading = true;
     try {
-      isTimelineLoading = true;
       notifyListeners();
       Log.yellow("Calling loadMoreTimelineItems");
       final result = await _timelineRepository.loadMoreTimelineItems(limitLoad, timelineItemId!);
@@ -90,7 +91,6 @@ extension Functions on HomeViewModel {
           notifyListeners();
         },
       );
-      isTimelineLoading = true;
       notifyListeners();
     } on Exception catch (e) {
       _dialogService.showCustomDialog(
@@ -98,13 +98,14 @@ extension Functions on HomeViewModel {
         title: e.toString(),
       );
     }
+    isTimelineLoading = false;
   }
 
   Future<void> checkLocationPermission({bool? isTurnOff}) async {
-    PermissionStatus status = await Permission.location.status;
+    PermissionStatus status = await _permissionService.checkLocationPermission();
 
     if (status.isDenied) {
-      status = await Permission.location.request();
+      status = await _permissionService.requestLocationPermission();
     }
 
     if(isTurnOff == true && isTurnOff !=null) {

@@ -19,8 +19,6 @@ class UserModel extends HiveObject {
   @HiveField(5)
   final StatisticsModel? statistics;
 
-  //toJson and fromJson are required for Hive
-
   UserModel({
     this.displayName,
     this.email,
@@ -34,8 +32,8 @@ class UserModel extends HiveObject {
         displayName: json['displayName'] ?? 'N/A',
         email: json['email'] ?? 'N/A',
         photoUrl: json['photoUrl'],
-        creationTime: json['creationTime'] ?? 'N/A',
-        lastLogin: json['lastLogin'] ?? 'N/A',
+        creationTime: json['creationTime'],
+        lastLogin: json['lastLogin'],
         statistics: json['statistics'] ?? 'N/A',
       );
 
@@ -43,8 +41,8 @@ class UserModel extends HiveObject {
         'displayName': displayName ?? 'N/A',
         'email': email ?? 'N/A',
         'photoUrl': photoUrl,
-        'creationTime': creationTime ?? 'N/A',
-        'lastLogin': lastLogin ?? 'N/A',
+        'creationTime': creationTime,
+        'lastLogin': lastLogin ?? Timestamp.now(),
         'statistics': statistics ?? 'N/A',
   };
 }

@@ -31,10 +31,14 @@ extension State on AuthViewModel {
     await Future.delayed(const Duration(seconds: 1), () {
       countdown--;
       notifyListeners();
+      if(navigationService.currentRoute == Routes.authView) {
+        countdown = 0;
+        return;
+      }
       if(countdown > 0){
         startCountdown();
-      } else {        
-        navigationService.replaceWithAuthView();
+      } else {
+        navigationService.back();
       }
     });
   }

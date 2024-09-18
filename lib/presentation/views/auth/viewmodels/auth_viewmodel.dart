@@ -19,9 +19,9 @@ class AuthViewModel extends BaseViewModel {
 
   AuthViewModel(this.userRepository);
 
-  final navigationService = locator<NavigationService>();
-  final themeService = locator<ThemeService>();
-  final dialogService = locator<DialogService>();
+  NavigationService navigationService = locator<NavigationService>();
+  ThemeService themeService = locator<ThemeService>();
+  DialogService dialogService = locator<DialogService>();
 
   TextEditingController emailController = TextEditingController();
   TextEditingController emailConfirmController = TextEditingController();

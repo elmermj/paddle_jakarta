@@ -8,6 +8,7 @@ import 'package:paddle_jakarta/presentation/views/home/views/home_settings_view.
 import 'package:paddle_jakarta/presentation/views/home/views/home_timeline_view.dart';
 import 'package:paddle_jakarta/presentation/widgets/nav_bar_item_widget.dart';
 import 'package:paddle_jakarta/presentation/widgets/timeline_appbar.dart';
+import 'package:paddle_jakarta/services/permission_service.dart';
 import 'package:paddle_jakarta/utils/themes/sporty_elegant_minimal_theme.dart';
 import 'package:stacked/stacked.dart';
 
@@ -175,7 +176,7 @@ class HomeView extends StackedView<HomeViewModel> {
   @override
   HomeViewModel viewModelBuilder(
     BuildContext context,
-  ) => HomeViewModel(locator<UserRepository>(), locator<TimelineRepository>());
+  ) => HomeViewModel(locator<UserRepository>(), locator<TimelineRepository>(), PermissionService());
 
   @override
   Future<void> onViewModelReady(HomeViewModel viewModel) async => await viewModel.init();

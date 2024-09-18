@@ -3,14 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:paddle_jakarta/app/app.bottomsheets.dart';
 import 'package:paddle_jakarta/app/app.dialogs.dart';
 import 'package:paddle_jakarta/app/app.locator.dart';
 import 'package:paddle_jakarta/app/app.router.dart';
 import 'package:paddle_jakarta/data/models/timeline_item_model.dart';
 import 'package:paddle_jakarta/domain/repository/timeline_repository.dart';
 import 'package:paddle_jakarta/domain/repository/user_repository.dart';
-import 'package:paddle_jakarta/presentation/common/app_strings.dart';
+import 'package:paddle_jakarta/services/permission_service.dart';
 import 'package:paddle_jakarta/services/theme_service.dart';
 import 'package:paddle_jakarta/utils/dummy/dummy_timeline_items.dart';
 import 'package:paddle_jakarta/utils/tools/log.dart';
@@ -26,13 +25,13 @@ class HomeViewModel extends BaseViewModel {
   
   final UserRepository _userRepository;
   final TimelineRepository _timelineRepository;
+  final PermissionService _permissionService;
 
-  HomeViewModel(this._userRepository, this._timelineRepository);
+  HomeViewModel(this._userRepository, this._timelineRepository, this._permissionService);
 
   final _dialogService = locator<DialogService>();
-  final _bottomSheetService = locator<BottomSheetService>();
   final _navigationService = locator<NavigationService>();
-  final themeService = locator<ThemeService>();
+  ThemeService themeService = locator<ThemeService>();
 
   int indexState = 0;
   int limitLoad = 10;
@@ -56,21 +55,6 @@ class HomeViewModel extends BaseViewModel {
   final timelineAppBarKey = GlobalKey();
 
   Set<TimelineItemModel> timelineItems = {};
-
-  void showDialog() {
-    _dialogService.showCustomDialog(
-      variant: DialogType.infoAlert,
-      title: 'Stacked Rocks!',
-    );
-  }
-
-  void showBottomSheet() {
-    _bottomSheetService.showCustomSheet(
-      variant: BottomSheetType.notice,
-      title: ksHomeBottomSheetTitle,
-      description: ksHomeBottomSheetDescription,
-    );
-  }
 
   Future<void> init() async {
     await mapInit();
