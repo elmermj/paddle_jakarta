@@ -92,13 +92,13 @@ class RemoteUserDataSource {
   Future<void> saveUserData(UserModel user) async {
     Log.yellow('Database URL: ${_firebaseFirestore.databaseURL}');
     try {
-      await _firebaseFirestore.collection('users').doc(user.email).get().then((value) {
-        if(value.exists){
-          _firebaseFirestore.collection('users').doc(user.email).update(user.toJson());
-        }else{
-          _firebaseFirestore.collection('users').doc(user.email).set(user.toJson());
-        }
-      });
+      final docRef = _firebaseFirestore.collection('users').doc(user.email);
+      final docSnapshot = await docRef.get();
+      if (docSnapshot.exists) {
+        await docRef.update(user.toJson());
+      } else {
+        await docRef.set(user.toJson());
+      }
     } on Exception catch (e) {
       throw Exception('Failed to save user data: $e');
     }

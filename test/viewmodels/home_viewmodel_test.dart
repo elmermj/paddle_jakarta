@@ -26,10 +26,8 @@ import 'home_viewmodel_test.mocks.dart';
 void main() {
   final mockUserRepository = MockUserRepository();
   final mockTimelineRepository = MockTimelineRepository();
-  final mockGeolocatorPlatform = MockGeolocatorPlatform();
   final mockPermissionService = MockPermissionService();
   final navigationService = MockNavigationService();
-  final mockThemeService = MockThemeService();
   late HomeViewModel model;
   HomeViewModel getModel() => HomeViewModel(mockUserRepository, mockTimelineRepository, mockPermissionService);
   group('HomeViewmodelTest -', () {
@@ -56,7 +54,7 @@ void main() {
       test('toggleTheme should work when called multiple times', () {
         model.toggleTheme();
         model.toggleTheme();
-        
+
         verify(model.toggleTheme()).called(2);
       });
 

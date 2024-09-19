@@ -28,7 +28,9 @@ class MatchModelAdapter extends TypeAdapter<MatchModel> {
           ?.map((dynamic e) => (e as List?)?.cast<UserModel>())
           ?.toList(),
       refereeId: fields[8] as String?,
-      teamScores: (fields[9] as List?)?.cast<int>(),
+      teamScores: (fields[9] as List?)
+          ?.map((dynamic e) => (e as List).cast<int>())
+          ?.toList(),
     );
   }
 

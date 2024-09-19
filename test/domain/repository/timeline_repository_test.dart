@@ -76,7 +76,7 @@ void main() {
 
       final result = await repository.saveTimelineItem(timelineItem);
 
-      expect(result, Right(null));
+      expect(result, const Right(null));
       verify(mockRemoteDataSource.saveTimelineItem(timelineItem)).called(1);
     });
 

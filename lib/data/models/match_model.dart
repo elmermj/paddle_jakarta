@@ -25,7 +25,7 @@ class MatchModel extends HiveObject{
   @HiveField(8)
   final String? refereeId;
   @HiveField(9)
-  final List<int>? teamScores;
+  final List<List<int>>? teamScores;
 
   MatchModel({
     this.matchId,
@@ -49,9 +49,17 @@ class MatchModel extends HiveObject{
       latitude: json['latitude'],
       longitude: json['longitude'],
       locationName: json['locationName'],
-      teams: json['teams'],
+      teams: (json['teams'] as List<dynamic>?)
+          ?.map((team) => (team as List<dynamic>?)
+              ?.map((player) => UserModel.fromJson(player as Map<String, dynamic>))
+              .toList())
+          .toList(),
       refereeId: json['refereeId'],
-      teamScores: json['teamScores'],
+      teamScores: (json['teamScores'] as List<dynamic>?)
+          ?.map((score) => (score as List<dynamic>)
+              .map((s) => s as int)
+              .toList())
+          .toList(),
     );
   }
 
@@ -64,9 +72,11 @@ class MatchModel extends HiveObject{
       'latitude': latitude,
       'longitude': longitude,
       'locationName': locationName,
-      'teams': teams,
+      'teams': teams
+          ?.map((team) => team?.map((player) => player.toJson()).toList())
+          .toList(),
       'refereeId': refereeId,
-      'teamScores': teamScores,
+      'teamScores': teamScores?.map((round) => round.map((score) => score).toList()).toList(),
     };
   }
 }

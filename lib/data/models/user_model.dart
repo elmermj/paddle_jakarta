@@ -34,7 +34,7 @@ class UserModel extends HiveObject {
         photoUrl: json['photoUrl'],
         creationTime: json['creationTime'],
         lastLogin: json['lastLogin'],
-        statistics: json['statistics'] ?? 'N/A',
+        statistics: json['statistics'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -43,6 +43,6 @@ class UserModel extends HiveObject {
         'photoUrl': photoUrl,
         'creationTime': creationTime,
         'lastLogin': lastLogin ?? Timestamp.now(),
-        'statistics': statistics ?? 'N/A',
+        'statistics': statistics,
   };
 }

@@ -24,13 +24,7 @@ class StatisticsModel extends HiveObject{
     this.draws,
     this.matchesPlayed,
     this.points,
-  })
-  : assert(userId != null),
-  assert(wins != null),
-  assert(losses != null),
-  assert(draws != null),
-  assert(matchesPlayed != null),
-  assert(points != null);
+  });
 
   factory StatisticsModel.fromJson(Map<String, dynamic> json) {
     return StatisticsModel(
