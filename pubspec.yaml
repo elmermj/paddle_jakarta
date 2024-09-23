@@ -26,6 +26,7 @@ dependencies:
   google_maps_flutter:
   permission_handler:
   geolocator:
+  http:
 
 dependency_overrides:
   flutter_any_logo:
@@ -41,6 +42,7 @@ dev_dependencies:
   mockito: ^5.4.1
   stacked_generator: ^1.3.3
   hive_generator:
+  mocktail:
 
 flutter:
   uses-material-design: true

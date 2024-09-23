@@ -1,25 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:http/http.dart' as http;
 import 'package:paddle_jakarta/app/app.locator.dart';
 import 'package:paddle_jakarta/services/theme_service.dart';
 
 import '../helpers/test_helpers.dart';
+import 'theme_service_test.mocks.dart';
 
+
+@GenerateNiceMocks([MockSpec<http.Client>()])
 void main() {
   group('ThemeService -', () {
     late ThemeService themeService;
+    late http.Client mockClient;
     TestWidgetsFlutterBinding.ensureInitialized();
 
     setUp(() {
       registerServices();
       themeService = ThemeService();
+      mockClient = MockClient();
     });
 
     tearDown(() => locator.reset());
 
     test('Initial dark mode state matches platform brightness', () {
       final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
-      expect(themeService.isDarkMode, equals(brightness == Brightness.dark));
+      if(brightness == Brightness.dark) {
+        expect(themeService.isDarkMode, equals(true));
+      } else {
+        expect(themeService.isDarkMode, equals(false));
+      }
     });
 
     test('toggleTheme changes isDarkMode', () {
@@ -49,4 +60,5 @@ void main() {
       expect(themeService.buttonHeight, isNull);
     });
   });
+
 }
