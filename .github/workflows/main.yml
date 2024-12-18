@@ -32,11 +32,13 @@ jobs:
       run: |
         mkdir -p assets
         echo "${{ secrets.DEV_FIREBASE_CONFIG }}" | base64 --decode > assets/firebase_options.json
+        cat assets/firebase_options.json
 
     - name: Set up Google Services
       run: |
         mkdir -p android/app
         echo "${{ secrets.DEV_GOOGLE_SERVICES }}" | base64 --decode > android/app/google-services.json
+        cat android/app/google-services.json
 
     - name: Install dependencies
       run: dart pub get
