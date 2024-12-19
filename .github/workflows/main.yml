@@ -43,6 +43,7 @@ jobs:
     - name: Inject API Key
       run: |
         sed -i "s/<API_KEY>/${{ secrets.GMAPS_API_KEY }}/g" android/app/src/main/AndroidManifest.xml
+        cat android/app/src/main/AndroidManifest.xml
 
     - name: Install dependencies
       run: dart pub get
