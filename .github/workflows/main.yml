@@ -47,6 +47,7 @@ jobs:
         SAFE_API_KEY=$(echo "${{ secrets.GMAPS_API_KEY }}" | sed 's/[&/\]/\\&/g')
         sed -i "s/<API_KEY>/${SAFE_API_KEY}/g" android/app/src/main/AndroidManifest.xml
         cat android/app/src/main/AndroidManifest.xml | grep "<API_KEY>" || echo "API key replaced successfully."
+        cat android/app/src/main/AndroidManifest.xml
 
     - name: Install dependencies
       run: dart pub get
