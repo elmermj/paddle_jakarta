@@ -1,4 +1,4 @@
-name: Dart
+name: Dart CI/CD
 
 on:
   push:
@@ -11,54 +11,66 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    # Checkout the code
+    - name: Checkout Code
       uses: actions/checkout@v4
 
+    # Set up Java 17 for the build process
     - name: Set up Java 17
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
         java-version: '17'
-        
-    - name: Check placeholder
-      run: cat android/app/src/main/AndroidManifest.xml
 
-    - name: Inject GMAPS API Key
-      run: |
-        echo "Replacing <API_KEY> with the secret..."
-        # Escape special characters in the API key
-        SAFE_API_KEY=$(echo "${{ secrets.GMAPS_API_KEY }}" | sed 's/[&/\]/\\&/g')
-        sed -i "s/<API_KEY>/${SAFE_API_KEY}/g" android/app/src/main/AndroidManifest.xml
-        cat android/app/src/main/AndroidManifest.xml | grep "<API_KEY>" || echo "API key replaced successfully."
-        cat android/app/src/main/AndroidManifest.xml
-
+    # Set up Flutter
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
         channel: stable
         flutter-version: 3.24.1
 
-    - run: flutter --version
+    # Display Flutter version
+    - name: Flutter Version
+      run: flutter --version
 
+    # Set up Firebase Options
     - name: Set up Firebase Options
       run: |
         mkdir -p assets
         echo "${{ secrets.DEV_FIREBASE_CONFIG }}" | base64 --decode > assets/firebase_options.json
         cat assets/firebase_options.json
 
+    # Set up Google Services
     - name: Set up Google Services
       run: |
         mkdir -p android/app
         echo "${{ secrets.DEV_GOOGLE_SERVICES }}" | base64 --decode > android/app/google-services.json
         cat android/app/google-services.json
 
-    - name: Install dependencies
+    # Inject API Key into AndroidManifest.xml
+    - name: Inject API Key
+      run: |
+        echo "Replacing <API_KEY> with the secret..."
+        SAFE_API_KEY=$(echo "${{ secrets.GMAPS_API_KEY }}" | sed 's/[&/\]/\\&/g')
+        sed -i "s/<API_KEY>/${SAFE_API_KEY}/g" android/app/src/main/AndroidManifest.xml
+        if grep "<API_KEY>" android/app/src/main/AndroidManifest.xml; then
+          echo "API_KEY was not replaced. Check your configuration."
+          exit 1
+        else
+          echo "API key replaced successfully."
+        fi
+        cat android/app/src/main/AndroidManifest.xml
+
+    # Install dependencies
+    - name: Install Dependencies
       run: dart pub get
 
+    # Build APK
     - name: Build APK
       run: flutter build apk --release
 
-    - name: Upload development APK to Google Drive
+    # Upload development APK to Google Drive
+    - name: Upload Development APK
       uses: adityak74/google-drive-upload-git-action@main
       with:
         credentials: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_BASE64 }}
@@ -66,4 +78,3 @@ jobs:
         folderId: ${{ secrets.FOLDER_ID }}
         name: "app-release.apk"
         overwrite: "true"
-
