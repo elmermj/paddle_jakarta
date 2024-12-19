@@ -40,10 +40,13 @@ jobs:
         echo "${{ secrets.DEV_GOOGLE_SERVICES }}" | base64 --decode > android/app/google-services.json
         cat android/app/google-services.json
         
-    - name: Inject API Key
+    - name: Inject GMAPS API Key
       run: |
-        sed -i "s/<API_KEY>/${{ secrets.GMAPS_API_KEY }}/g" android/app/src/main/AndroidManifest.xml
-        cat android/app/src/main/AndroidManifest.xml
+        echo "Replacing <API_KEY> with the secret..."
+        # Escape special characters in the API key
+        SAFE_API_KEY=$(echo "${{ secrets.GMAPS_API_KEY }}" | sed 's/[&/\]/\\&/g')
+        sed -i "s/<API_KEY>/${SAFE_API_KEY}/g" android/app/src/main/AndroidManifest.xml
+        cat android/app/src/main/AndroidManifest.xml | grep "<API_KEY>" || echo "API key replaced successfully."
 
     - name: Install dependencies
       run: dart pub get
