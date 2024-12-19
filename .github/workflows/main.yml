@@ -39,6 +39,10 @@ jobs:
         mkdir -p android/app
         echo "${{ secrets.DEV_GOOGLE_SERVICES }}" | base64 --decode > android/app/google-services.json
         cat android/app/google-services.json
+        
+    - name: Inject API Key
+      run: |
+        sed -i "s/<API_KEY>/${{ secrets.GMAPS_API_KEY }}/g" android/app/src/main/AndroidManifest.xml
 
     - name: Install dependencies
       run: dart pub get
