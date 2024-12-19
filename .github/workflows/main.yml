@@ -48,7 +48,7 @@ jobs:
       run: dart pub get
 
     - name: Build APK
-      run: flutter build apk --release --stacktrace
+      run: flutter build apk --release
 
     - name: Upload development APK to Google Drive
       uses: adityak74/google-drive-upload-git-action@main
