@@ -64,6 +64,12 @@ jobs:
         echo "${{ secrets.DEV_GOOGLE_SERVICES }}" | base64 --decode > android/app/google-services.json
         cat android/app/google-services.json
 
+    # Decode and save Google Service Account credentials
+    - name: Decode Google Drive Credentials
+      run: |
+        echo "${{ secrets.GDRIVE_SERVICE_ACCOUNT_BASE64 }}" | base64 --decode > gdrive-service-account.json
+        cat gdrive-service-account.json
+    
     # Install dependencies
     - name: Install Dependencies
       run: dart pub get
@@ -76,7 +82,7 @@ jobs:
     - name: Upload Development APK
       uses: adityak74/google-drive-upload-git-action@main
       with:
-        credentials: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_BASE64 }}
+        credentials: gdrive-service-account.json
         filename: "build/app/outputs/flutter-apk/app-release.apk"
         folderId: ${{ secrets.FOLDER_ID }}
         name: "app-release.apk"
