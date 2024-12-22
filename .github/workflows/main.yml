@@ -82,7 +82,7 @@ jobs:
     - name: Upload Development APK
       uses: adityak74/google-drive-upload-git-action@main
       with:
-        credentials: gdrive-service-account.json
+        credentials: "${{ secrets.GDRIVE_SERVICE_ACCOUNT_BASE64 }}"
         filename: "build/app/outputs/flutter-apk/app-release.apk"
         folderId: ${{ secrets.FOLDER_ID }}
         name: "app-release.apk"

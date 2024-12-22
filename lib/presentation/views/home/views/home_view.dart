@@ -202,7 +202,7 @@ class HomeView extends StackedView<HomeViewModel> {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   key: const ValueKey('loading'), // Unique key for state differentiation
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     CircularProgressIndicator(
