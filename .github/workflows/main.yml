@@ -38,7 +38,6 @@ jobs:
       run: |
         echo "Overwriting AndroidManifest.xml with the version from secrets..."
         echo "${{ secrets.ANDROID_MANIFEST_BASE64 }}" | base64 --decode > android/app/src/main/AndroidManifest.xml
-        cat android/app/src/main/AndroidManifest.xml
 
     # Verify the file was replaced successfully
     - name: Verify AndroidManifest.xml
@@ -55,20 +54,17 @@ jobs:
       run: |
         mkdir -p assets
         echo "${{ secrets.DEV_FIREBASE_CONFIG }}" | base64 --decode > assets/firebase_options.json
-        cat assets/firebase_options.json
 
     # Set up Google Services
     - name: Set up Google Services
       run: |
         mkdir -p android/app
         echo "${{ secrets.DEV_GOOGLE_SERVICES }}" | base64 --decode > android/app/google-services.json
-        cat android/app/google-services.json
 
     # Decode and save Google Service Account credentials
     - name: Decode Google Drive Credentials
       run: |
         echo "${{ secrets.GDRIVE_SERVICE_ACCOUNT_BASE64 }}" | base64 --decode > gdrive-service-account.json
-        cat gdrive-service-account.json
     
     # Install dependencies
     - name: Install Dependencies

@@ -1,0 +1,6 @@
+class NotificationRepository {
+
+  getNotifications(){}
+
+  sendNotifications(){}
+}
