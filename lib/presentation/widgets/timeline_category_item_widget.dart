@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:paddle_jakarta/presentation/views/home/viewmodels/home_viewmodel.dart';
 
 class TimelineCategoryItemWidget extends StatelessWidget {
   const TimelineCategoryItemWidget({
     super.key,
-    required this.viewModel,
+    required this.onTap, required this.title,
   });
 
-  final HomeViewModel viewModel;
+  final void Function()? onTap;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(8),
-      onTap: () => viewModel.toggleLastMatchCardMinimized(),
+      onTap: onTap,
       splashColor: Theme.of(context).colorScheme.primary.withOpacity(1),
       highlightColor: Theme.of(context).colorScheme.primary.withOpacity(1),
       hoverColor: Theme.of(context).colorScheme.primary.withOpacity(1),
@@ -31,7 +31,7 @@ class TimelineCategoryItemWidget extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 4),
         child: Center(
           child: Text(
-            'Match History',
+            title,
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),

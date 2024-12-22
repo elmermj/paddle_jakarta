@@ -1,114 +1,173 @@
 import 'package:flutter/material.dart';
 import 'package:paddle_jakarta/presentation/views/home/viewmodels/home_viewmodel.dart';
 import 'package:paddle_jakarta/presentation/widgets/match_history_card_widget.dart';
+import 'package:paddle_jakarta/presentation/widgets/radar_chart_widget.dart';
+import 'package:paddle_jakarta/presentation/widgets/speedometer_widget.dart';
 import 'package:paddle_jakarta/presentation/widgets/timeline_category_item_widget.dart';
 import 'package:paddle_jakarta/utils/tools/log.dart';
 
-class TimelineAppBar extends AppBar {
+class TimelineAppBar extends StatelessWidget {
   final MediaQueryData mediaQuery;
-  final bool isLastMatchCardMinimized;
+  final bool isSpeedometerMinimizedFinalized;
   final bool isLastMatchCardMinimizedFinalized;
-  final Function onTap;
+  final bool isRadarChartMinimizedFinalized;
   final HomeViewModel viewModel;
+  final double height;
 
-  TimelineAppBar({
+  const TimelineAppBar({
     super.key,
     required this.mediaQuery,
-    required this.isLastMatchCardMinimized,
-    required this.onTap,
+    required this.isSpeedometerMinimizedFinalized,
     required this.viewModel, 
+    required this.height,
     required this.isLastMatchCardMinimizedFinalized,
+    required this.isRadarChartMinimizedFinalized,
   });
-  
-  @override
-  Size get preferredSize {
-    final double cardHeight = mediaQuery.size.width / (18 / 9) + 24;
-    Log.green("App bar height : ${isLastMatchCardMinimizedFinalized ? kToolbarHeight : (mediaQuery.size.width / (18 / 9) + 24)}");
-    return Size.fromHeight(isLastMatchCardMinimizedFinalized 
-    ? kToolbarHeight : (cardHeight + 48 > 280 ? 280 : cardHeight + 48));
-  }
 
   @override
-  Widget get flexibleSpace {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Container(
-        constraints: BoxConstraints(
-          maxHeight: isLastMatchCardMinimizedFinalized ? kToolbarHeight : (mediaQuery.size.width / (18 / 9) + 24),
-        ),
-        width: constraints.maxWidth > 480 ? 480 : constraints.maxWidth,
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: AnimatedSwitcher(
-                  duration: Durations.short3,
-                  reverseDuration: Durations.short3,
-                  transitionBuilder: _transitionBuilder,
-                  child: isLastMatchCardMinimized
-                    ? Row(
-                        children: [
-                          Flexible(
-                            child: IntrinsicHeight(
-                              child: TimelineCategoryItemWidget(viewModel: viewModel,),
-                            ),
-                          ),
-                          Flexible(
-                            child: IntrinsicHeight(
-                              child: TimelineCategoryItemWidget(viewModel: viewModel,),
-                            ),
-                          ),
-                          Flexible(
-                            child: IntrinsicHeight(
-                              child: TimelineCategoryItemWidget(viewModel: viewModel,),
-                            ),
-                          ),
-                        ],
-                      )
-                    : const SizedBox.shrink(),
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: AnimatedSwitcher(
-                  duration: Durations.short3,
-                  reverseDuration: Durations.short3,
-                  transitionBuilder: _transitionBuilder,
-                  child: isLastMatchCardMinimized
-                    ? const SizedBox.shrink()
-                    : Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            borderRadius: BorderRadius.circular(16),
-                            onTap: () => onTap(),
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            child: SizedBox(
-                              width: mediaQuery.size.width > 480 
-                                    ? 480 : mediaQuery.size.width,
-                              child: MatchHistoryCardWidget(
-                                key: const ValueKey('matchHistoryCard'),
-                                mediaQuery: mediaQuery,
-                                isLast: true,
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 150),
+      transitionBuilder: _transitionBuilder,
+      child: AnimatedContainer(
+        key: ValueKey<double>(height),  // Unique key to trigger animation when height changes
+        duration: const Duration(milliseconds: 150),
+        width: mediaQuery.size.width > 480 ? 480 : mediaQuery.size.width,
+        height: height,
+        alignment: Alignment.topCenter,
+        transformAlignment: Alignment.topCenter,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Stack(
+              children: [
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: isLastMatchCardMinimizedFinalized &&
+                            isSpeedometerMinimizedFinalized &&
+                            isRadarChartMinimizedFinalized
+                        ? Row(
+                            children: [
+                              Flexible(
+                                child: IntrinsicHeight(
+                                  child: TimelineCategoryItemWidget(
+                                    title: 'Match History',
+                                    onTap: () => viewModel.toggleLastMatchCardMinimized(),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
+                              Flexible(
+                                child: IntrinsicHeight(
+                                  child: TimelineCategoryItemWidget(
+                                    title: 'Your rating',
+                                    onTap: () => viewModel.toggleSpeedometerMinimized(),
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                child: IntrinsicHeight(
+                                  child: TimelineCategoryItemWidget(
+                                    title: 'Your stats',
+                                    onTap: () => viewModel.toggleRadarChartMinimized(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : const SizedBox.shrink(),
+                  ),
                 ),
-              ),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      reverseDuration: const Duration(milliseconds: 300),
+                      transitionBuilder: _transitionBuilder,
+                      child: _buildAppBarBody(viewModel),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAppBarBody(HomeViewModel viewModel) {
+    if (!isLastMatchCardMinimizedFinalized) {
+      return SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => viewModel.toggleLastMatchCardMinimized(),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          child: SizedBox(
+            width: mediaQuery.size.width > 480 
+                  ? 480 : mediaQuery.size.width,
+            child: MatchHistoryCardWidget(
+              key: const ValueKey('matchHistoryCard'),
+              mediaQuery: mediaQuery,
+              isLast: true,
             ),
-          ],
+          ),
         ),
       );
-      },
-    );
+    }
+    if (!isRadarChartMinimizedFinalized) {
+      return SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => viewModel.toggleRadarChartMinimized(),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          child: SizedBox(
+            width: mediaQuery.size.width > 480
+                  ? 480 : mediaQuery.size.width,
+            child: RadarChartWidget(
+              key: const ValueKey('radarChart'),
+              values: const [0.8 , 0.45, 0.33, 0.96, 0.79, 0.8],
+              height: height,
+              labels: const [
+                'Attack',
+                'Defence',
+                'Mobility',
+                'Technique',
+                'Tactics',
+                'Overall',
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+    if (!isSpeedometerMinimizedFinalized) {
+      return SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => viewModel.toggleSpeedometerMinimized(),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          child: SizedBox(
+            width: mediaQuery.size.width > 480 
+                  ? 480 : mediaQuery.size.width,
+            child: SpeedometerWidget(
+              key: const ValueKey('speedometer'),
+              height: 180,
+              mediaQuery: mediaQuery,
+              actualValue: 68.8,)
+          ),
+        ),
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   Widget _transitionBuilder(Widget child, Animation<double> animation) {
@@ -120,12 +179,15 @@ class TimelineAppBar extends AppBar {
       CurvedAnimation(parent: animation, curve: Curves.easeInOut),
     );
 
-    return ScaleTransition(
+    return Align(
       alignment: Alignment.topCenter,
-      scale: scaleAnimation,
-      child: FadeTransition(
-        opacity: fadeAnimation,
-        child: child,
+      child: ScaleTransition(
+        alignment: Alignment.topCenter,
+        scale: scaleAnimation,
+        child: FadeTransition(
+          opacity: fadeAnimation,
+          child: child,
+        ),
       ),
     );
   }

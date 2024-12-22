@@ -10,24 +10,7 @@ class HomeTimelineView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return AnimatedSwitcher(
-      duration: Durations.short3,
-      reverseDuration: Durations.short3,
-      transitionBuilder: (Widget child, Animation<double> animation) {
-        return ScaleTransition(
-          scale: animation,
-          child: FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
-        );
-      },
-      child: Builder(
-        key: ValueKey<bool>(viewModel.isLastMatchCardMinimized),
-        builder: (context) => viewModel.timelineBodySwitch ? const SizedBox.shrink() : _buildChild(context)
-      )
-    );
+    return _buildChild(context);
   }
 
   Widget _buildChild(BuildContext context) {
@@ -110,9 +93,10 @@ class HomeTimelineView extends StatelessWidget {
                 : ListView.builder(
                     shrinkWrap: true,
                     reverse: true,
+                    padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight + 16),
                     physics: const BouncingScrollPhysics(),
                     itemCount: viewModel.dummyTimelineItems.length,
-                    controller: viewModel.timelineScrollController ?? ScrollController(),
+                    controller: viewModel.timelineScrollController,
                     itemBuilder: (context, index) {
                       return Container(
                         constraints: const BoxConstraints(
@@ -132,6 +116,7 @@ class HomeTimelineView extends StatelessWidget {
             ),
           ),
         ),
+        const SliverToBoxAdapter(child: SizedBox(height: kBottomNavigationBarHeight + 32),),
       ],
     );
   }

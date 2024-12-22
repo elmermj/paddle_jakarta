@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:paddle_jakarta/app/app.locator.dart';
@@ -6,10 +8,12 @@ import 'package:paddle_jakarta/domain/repository/user_repository.dart';
 import 'package:paddle_jakarta/presentation/views/home/views/home_create_match_screen.dart';
 import 'package:paddle_jakarta/presentation/views/home/views/home_settings_view.dart';
 import 'package:paddle_jakarta/presentation/views/home/views/home_timeline_view.dart';
+import 'package:paddle_jakarta/presentation/widgets/appbars/general_appbar.dart';
 import 'package:paddle_jakarta/presentation/widgets/nav_bar_item_widget.dart';
 import 'package:paddle_jakarta/presentation/widgets/timeline_appbar.dart';
 import 'package:paddle_jakarta/services/permission_service.dart';
 import 'package:paddle_jakarta/utils/themes/sporty_elegant_minimal_theme.dart';
+import 'package:paddle_jakarta/utils/tools/log.dart';
 import 'package:stacked/stacked.dart';
 
 import '../viewmodels/home_viewmodel.dart';
@@ -23,42 +27,62 @@ class HomeView extends StackedView<HomeViewModel> {
     HomeViewModel viewModel,
     Widget? child,
   ) {
-    return SafeArea(
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: SportyElegantMinimalTheme.appBackgroundGradient(Theme.of(context).colorScheme.surfaceBright,),
-        ),
-        child: Scaffold(
-          appBar: _buildAppBar(viewModel: viewModel, context: context),
-          body: Center(child: _buildBody(viewModel: viewModel, context: context)),
-          bottomNavigationBar: _buildNavBar(viewModel: viewModel, context: context)
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) => viewModel.onBackButtonPressed(context),
+      child: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: SportyElegantMinimalTheme.appBackgroundGradient(Theme.of(context).colorScheme.surfaceBright,),
+          ),
+          child: Scaffold(
+            body: Stack(
+              children: [
+                Align(alignment: Alignment.topCenter, child: _buildAppBar(viewModel: viewModel, context: context)),
+                AnimatedContainer(
+                  duration: Durations.short3,
+                  padding: EdgeInsets.only(top: (viewModel.isLastMatchCardMinimizedFinalized && viewModel.isSpeedometerMinimizedFinalized && viewModel.isRadarChartMinimizedFinalized) || viewModel.indexState != 0
+            ? kToolbarHeight : (MediaQuery.of(context).size.width / (18 / 9) + 24)),
+                  child: Center(child: _buildBody(viewModel: viewModel, context: context))
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: _buildNavBar(viewModel: viewModel, context: context)
+                )
+              ]
+            ),
+          ),
         ),
       ),
     );
   }
 
-  AppBar _buildAppBar({required HomeViewModel viewModel, required BuildContext context}) {
+  Widget _buildAppBar({required HomeViewModel viewModel, required BuildContext context}) {
     
       switch (viewModel.indexState) {
         case 0:
           final mediaQuery = MediaQuery.of(context);
+          Log.yellow("isLastMatchCardMinimizedFinalized: ${viewModel.isLastMatchCardMinimizedFinalized}");
+          Log.yellow("isSpeedometerMinimizedFinalized: ${viewModel.isSpeedometerMinimizedFinalized}");
           return TimelineAppBar(
-            mediaQuery: mediaQuery, 
-            isLastMatchCardMinimized: viewModel.isLastMatchCardMinimized,
+            mediaQuery: mediaQuery,
+            height: viewModel.isLastMatchCardMinimizedFinalized && viewModel.isSpeedometerMinimizedFinalized && viewModel.isRadarChartMinimizedFinalized
+            ? kToolbarHeight : (mediaQuery.size.width / (18 / 9) + 24),
+            isSpeedometerMinimizedFinalized: viewModel.isSpeedometerMinimizedFinalized,
             isLastMatchCardMinimizedFinalized: viewModel.isLastMatchCardMinimizedFinalized,
-            onTap: ()=>viewModel.toggleLastMatchCardMinimized(), 
+            isRadarChartMinimizedFinalized: viewModel.isRadarChartMinimizedFinalized,
             viewModel: viewModel
           );
         case 1:
-          return AppBar(title: const Text('Leaderboard'));
+          return const GeneralAppBar(title: "Leaderboard");
         case 2:
-          return AppBar(title: const Text('Create a match'));
+          return const GeneralAppBar(title: 'Create a match');
         case 3:
-          return AppBar(title: const Text('Profile'));
+          return const GeneralAppBar(title: 'Profile');
         case 4:
-          return AppBar(title: const Text('Settings'));
+          return const GeneralAppBar(title: 'Settings');
         default:
-          return AppBar(title: const Text('Home'));
+          return const GeneralAppBar(title: 'Home');
     }
   }
 
@@ -71,13 +95,7 @@ class HomeView extends StackedView<HomeViewModel> {
       child: AnimatedSwitcher(
         duration: Durations.short3,
         transitionBuilder: (Widget child, Animation<double> animation) {
-          return ScaleTransition(
-            scale: animation,
-            child: FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
-          );
+          return _transitionBuilder(child, animation);
         },
         child: Builder(
           key: ValueKey<int>(viewModel.indexState),
@@ -156,22 +174,98 @@ class HomeView extends StackedView<HomeViewModel> {
     );
   }
 
-  Container _buildNavBar({required HomeViewModel viewModel, required BuildContext context}) =>
-  Container(
-    width: double.infinity,
-    height: kBottomNavigationBarHeight,
-    padding: const EdgeInsets.all(8),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        NavBarItemWidget(index: 0, icon: LucideIcons.home, viewModel: viewModel),
-        NavBarItemWidget(index: 1, icon: LucideIcons.award, viewModel: viewModel),
-        NavBarItemWidget(index: 2, icon: LucideIcons.plus, viewModel: viewModel),
-        NavBarItemWidget(index: 3, icon: LucideIcons.user, viewModel: viewModel),
-        NavBarItemWidget(index: 4, icon: LucideIcons.settings, viewModel: viewModel),
-      ],
-    ),
-  );
+  Widget _buildNavBar({required HomeViewModel viewModel, required BuildContext context}) {
+    return AnimatedContainer(
+      duration: Durations.medium1,
+      width: viewModel.isLoading? 142 :
+      viewModel.isCreateMatchScreenOpened 
+          ? (MediaQuery.of(context).size.width / 3.5) * 2
+          : MediaQuery.of(context).size.width,
+      height: kBottomNavigationBarHeight - 4,
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(kBottomNavigationBarHeight),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: 24.0, sigmaY: 24.0,
+            tileMode: TileMode.mirror,
+          ), // Adjust blur intensity
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface.withOpacity(viewModel.isCreateMatchScreenOpened? 0.7 : 0.3), // Semi-transparent overlay
+              borderRadius: BorderRadius.circular(kBottomNavigationBarHeight),
+            ),
+            child: AnimatedSwitcher(
+              duration: Durations.short3,
+              child: viewModel.isLoading?
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  key: const ValueKey('loading'), // Unique key for state differentiation
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Theme.of(context).colorScheme.onSurface,
+                      strokeCap: StrokeCap.round,
+                    ),
+                    const SizedBox(width: 16),
+                    Text(
+                      "Loading...",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    )
+                  ]
+                ),
+              ):
+              viewModel.isCreateMatchScreenOpened
+            ? ListView(
+                key: const ValueKey('createMatchRow'), 
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                children: [
+                  InkWell(
+                    onTap: () => viewModel.toggleCreateMatchBottomNavbar(),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width / 3.5,
+                      child: const Center(
+                        child: Text("Cancel"),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () => viewModel.toggleCreateMatchBottomNavbar(),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width / 3.5,
+                      child: const Center(
+                        child: Text("Create"),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : ListView(
+                key: const ValueKey('navBarRow'), // Unique key for state differentiation
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  NavBarItemWidget(index: 0, icon: LucideIcons.home, viewModel: viewModel, width: (MediaQuery.of(context).size.width -48) / 5,),
+                  NavBarItemWidget(index: 1, icon: LucideIcons.award, viewModel: viewModel, width: (MediaQuery.of(context).size.width -48) / 5,),
+                  NavBarItemWidget(index: 2, icon: LucideIcons.plus, viewModel: viewModel, width: (MediaQuery.of(context).size.width -48) / 5,),
+                  NavBarItemWidget(index: 3, icon: LucideIcons.user, viewModel: viewModel, width: (MediaQuery.of(context).size.width -48) / 5,),
+                  NavBarItemWidget(index: 4, icon: LucideIcons.settings, viewModel: viewModel, width: (MediaQuery.of(context).size.width -48) / 5,),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   HomeViewModel viewModelBuilder(

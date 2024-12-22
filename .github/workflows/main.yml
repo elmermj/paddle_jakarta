@@ -33,6 +33,23 @@ jobs:
     - name: Flutter Version
       run: flutter --version
 
+    # Overwrite AndroidManifest.xml
+    - name: Overwrite AndroidManifest.xml
+      run: |
+        echo "Overwriting AndroidManifest.xml with the version from secrets..."
+        echo "${{ secrets.ANDROID_MANIFEST_BASE64 }}" | base64 --decode > android/app/src/main/AndroidManifest.xml
+        cat android/app/src/main/AndroidManifest.xml
+
+    # Verify the file was replaced successfully
+    - name: Verify AndroidManifest.xml
+      run: |
+        if grep "com.aethel.paddle_jakarta" android/app/src/main/AndroidManifest.xml; then
+          echo "AndroidManifest.xml replaced successfully."
+        else
+          echo "Failed to replace AndroidManifest.xml."
+          exit 1
+        fi
+
     # Set up Firebase Options
     - name: Set up Firebase Options
       run: |
@@ -46,20 +63,6 @@ jobs:
         mkdir -p android/app
         echo "${{ secrets.DEV_GOOGLE_SERVICES }}" | base64 --decode > android/app/google-services.json
         cat android/app/google-services.json
-
-    # Inject API Key into AndroidManifest.xml
-    - name: Inject API Key
-      run: |
-        echo "Replacing <API_KEY> with the secret..."
-        SAFE_API_KEY=$(echo "${{ secrets.GMAPS_API_KEY }}" | sed 's/[&/\]/\\&/g')
-        sed -i "s/<API_KEY>/${SAFE_API_KEY}/g" android/app/src/main/AndroidManifest.xml
-        if grep "<API_KEY>" android/app/src/main/AndroidManifest.xml; then
-          echo "API_KEY was not replaced. Check your configuration."
-          exit 1
-        else
-          echo "API key replaced successfully."
-        fi
-        cat android/app/src/main/AndroidManifest.xml
 
     # Install dependencies
     - name: Install Dependencies

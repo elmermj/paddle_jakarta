@@ -18,7 +18,7 @@ const Widget verticalSpaceSmall = SizedBox(height: _smallSize);
 const Widget verticalSpaceMedium = SizedBox(height: _mediumSize);
 const Widget verticalSpaceLarge = SizedBox(height: _largeSize);
 const Widget verticalSpaceMassive = SizedBox(height: _massiveSize);
-
+const Widget verticalSpaceBottomNav = SizedBox(height: kBottomNavigationBarHeight + 32);
 Widget spacedDivider = const Column(
   children: <Widget>[
     verticalSpaceMedium,

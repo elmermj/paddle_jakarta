@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:paddle_jakarta/app/app.bottomsheets.dart';
 import 'package:paddle_jakarta/app/app.dialogs.dart';
 import 'package:paddle_jakarta/app/app.locator.dart';
@@ -17,6 +18,11 @@ Future<void> main() async {
   await setupLocator();
   setupDialogUi();
   setupBottomSheetUi();
+
+  SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]
+  );
+  
   runApp(const MainApp());
 }
 

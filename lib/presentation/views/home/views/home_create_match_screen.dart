@@ -12,7 +12,7 @@ class HomeCreateMatchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String _mapStyle = jsonEncode([
+    final String mapStyle = jsonEncode([
       {
         "featureType": "landscape.natural",
         "elementType": "all",
@@ -75,8 +75,6 @@ class HomeCreateMatchScreen extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          verticalSpaceMedium,
-          Text('Create a match', style: Theme.of(context).textTheme.titleLarge),
           verticalSpaceLarge,
           AspectRatio(
             aspectRatio: 9 / 11,
@@ -86,7 +84,7 @@ class HomeCreateMatchScreen extends StatelessWidget {
                 children: [
                   viewModel.isLocationPermissionGranted
                   ? GoogleMap(
-                    style: _mapStyle,
+                    style: mapStyle,
                     initialCameraPosition: CameraPosition(
                       target: viewModel.currentPosition ?? const LatLng(-6.2088, 106.8456),
                       zoom: 15.0,

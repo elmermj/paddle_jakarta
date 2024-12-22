@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:paddle_jakarta/app/app.dialogs.dart';
@@ -9,6 +11,7 @@ import 'package:paddle_jakarta/app/app.router.dart';
 import 'package:paddle_jakarta/data/models/timeline_item_model.dart';
 import 'package:paddle_jakarta/domain/repository/timeline_repository.dart';
 import 'package:paddle_jakarta/domain/repository/user_repository.dart';
+import 'package:paddle_jakarta/presentation/widgets/dialogs/prompt_dialog.dart';
 import 'package:paddle_jakarta/services/permission_service.dart';
 import 'package:paddle_jakarta/services/theme_service.dart';
 import 'package:paddle_jakarta/utils/dummy/dummy_timeline_items.dart';
@@ -34,6 +37,7 @@ class HomeViewModel extends BaseViewModel {
   ThemeService themeService = locator<ThemeService>();
 
   int indexState = 0;
+  int previousIndexState = 0;
   int limitLoad = 10;
 
   late bool isLocationPermissionGranted;
@@ -41,11 +45,19 @@ class HomeViewModel extends BaseViewModel {
   bool isDeletingCache = false;
   bool isLastMatchCardMinimized = false;
   bool isLastMatchCardMinimizedFinalized = false;
+  bool isSpeedometerMinimized = false;
+  bool isSpeedometerMinimizedFinalized = false;
+  bool isRadarChartMinimized = false;
+  bool isRadarChartMinimizedFinalized = false;
   bool timelineBodySwitch = false;
   bool isAnimating = false;
   bool isNotificationUnseen = false;
   bool isEditingProfile = false;
   bool isTimelineLoading = false;
+  bool isCreateMatchScreenOpened = false;
+
+  bool isLoading = false;
+  
   double progress = 1.0;
   double appBarHeight = 0.0;
 
@@ -60,6 +72,7 @@ class HomeViewModel extends BaseViewModel {
     await mapInit();
     await getMyTimeline();
     _initializeScrollListener();
+    jumpToMinOffset();
   }
 
   Future<void> mapInit() async {

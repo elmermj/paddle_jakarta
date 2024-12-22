@@ -35,7 +35,7 @@ class HomeSettingsView extends StatelessWidget {
             ? MediaQuery.of(context).size.height / 2
             : 480,
             ),
-            margin: const EdgeInsets.only(top: 24),
+            margin: const EdgeInsets.only(top: 12),
             child: AspectRatio(
               aspectRatio: 18/6,
               child: Stack(
@@ -92,7 +92,7 @@ class HomeSettingsView extends StatelessWidget {
                             )
                           )
                         ]
-                      )
+                      ),
                     ],
                   ),
                 ],
@@ -268,6 +268,7 @@ class HomeSettingsView extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () async => await viewModel.logout(),
                     child: const Text("Logout")),
+                verticalSpaceBottomNav
               ],
             ),
           ),
