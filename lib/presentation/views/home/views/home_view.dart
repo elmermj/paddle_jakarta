@@ -177,7 +177,7 @@ class HomeView extends StackedView<HomeViewModel> {
   Widget _buildNavBar({required HomeViewModel viewModel, required BuildContext context}) {
     return AnimatedContainer(
       duration: Durations.medium1,
-      width: viewModel.isLoading? 142 :
+      width: viewModel.isLoading? kBottomNavigationBarHeight :
       viewModel.isCreateMatchScreenOpened 
           ? (MediaQuery.of(context).size.width / 3.5) * 2
           : MediaQuery.of(context).size.width,
@@ -198,26 +198,15 @@ class HomeView extends StackedView<HomeViewModel> {
             child: AnimatedSwitcher(
               duration: Durations.short3,
               child: viewModel.isLoading?
-              Padding(
+              Container(
                 padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  key: const ValueKey('loading'), // Unique key for state differentiation
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Theme.of(context).colorScheme.onSurface,
-                      strokeCap: StrokeCap.round,
-                    ),
-                    const SizedBox(width: 16),
-                    Text(
-                      "Loading...",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                    )
-                  ]
+                height: kBottomNavigationBarHeight -16,
+                width: kBottomNavigationBarHeight -16,
+                child: CircularProgressIndicator(
+                  key: const ValueKey('loading'),
+                  strokeWidth: 2,
+                  color: Theme.of(context).colorScheme.onSurface,
+                  strokeCap: StrokeCap.round,
                 ),
               ):
               viewModel.isCreateMatchScreenOpened
